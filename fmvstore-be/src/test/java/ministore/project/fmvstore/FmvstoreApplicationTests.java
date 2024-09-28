@@ -1,10 +1,10 @@
-package com.project;
+package ministore.project.fmvstore;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SwdApplicationTests {
+class FmvstoreApplicationTests {
 
 	@Test
 	void contextLoads() {
