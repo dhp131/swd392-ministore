@@ -1,6 +1,8 @@
 package ministore.project.fmvstore.User;
 
 import lombok.RequiredArgsConstructor;
+import ministore.project.fmvstore.exception.AppException;
+import ministore.project.fmvstore.exception.ErrorCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,7 @@ public class UserService {
 
 
     public void createUser(UserCreationRequest request) {
+
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(request.getUsername());
         userEntity.setFirstName(request.getFirstName());
