@@ -7,7 +7,7 @@ interface LogoLetterProps {
   color?: string
 }
 
-const LogoLetter: React.FC<LogoLetterProps> = ({ letter, color = 'text-green-600' }) => (
+export const LogoLetter: React.FC<LogoLetterProps> = ({ letter, color = 'text-green-600' }) => (
   <div className={`self-stretch my-auto ${color}`}>{letter}</div>
 )
 

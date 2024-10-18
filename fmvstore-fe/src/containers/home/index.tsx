@@ -1,7 +1,12 @@
+import CardPromotion from './CardPromotion'
+import CustomerReview from './CustomerReview'
 import LorealPromotion from './LorealPromotion'
 import NewProduct from './NewProduct'
+import Payment from './Payment'
 import Promotion from './Promotion'
 import Sponsors from './Sponsors'
+import SubPromotion from './SubPromotion'
+import Subscription from './Subscription'
 
 const HomePageContainer = () => {
   return (
@@ -16,6 +21,15 @@ const HomePageContainer = () => {
           <NewProduct />
         </div>
       </div>
+      <CardPromotion />
+      <div className="w-full flex  flex-col justify-center items-center">
+        <div className="w-[1280px] flex flex-col">
+          <SubPromotion />
+        </div>
+      </div>
+      <Payment />
+      <CustomerReview />
+      <Subscription />
     </div>
   )
 }
