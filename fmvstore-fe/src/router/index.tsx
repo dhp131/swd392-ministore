@@ -8,7 +8,7 @@ import ProductDetailPage from '@/pages/products/detail'
 import RegisterPage from '@/pages/register'
 import { createBrowserRouter } from 'react-router-dom'
 
-const isLogin = false
+const isLogin = true
 
 const router = createBrowserRouter([
   {
