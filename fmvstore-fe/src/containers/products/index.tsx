@@ -174,7 +174,7 @@ const ProductsContainer = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/components">Rau củ & Trái cây</BreadcrumbLink>
+              <BreadcrumbLink href="/products">Rau củ & Trái cây</BreadcrumbLink>
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>

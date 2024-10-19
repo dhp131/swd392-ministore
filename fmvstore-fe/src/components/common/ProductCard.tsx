@@ -17,7 +17,7 @@ type ProductCardProps = {
 const ProductCard = ({ id, name, price, category, image, discount, react }: ProductCardProps) => {
   const navigate = useNavigate()
   const navigateToProductDetail = () => {
-    navigate(`/product/${id}`)
+    navigate(`/products/${id}`)
   }
   return (
     <div
