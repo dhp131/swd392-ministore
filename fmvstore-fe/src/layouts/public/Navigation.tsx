@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 const navigationItems = [
   { label: 'Giới thiệu', href: '#' },
-  { label: 'Cửa hàng', href: '#' },
+  { label: 'Cửa hàng', href: '/products' },
   { label: 'Kiểm tra hóa đơn', href: '#' },
   { label: 'Đăng nhập', href: '/login' },
 ]

@@ -1,4 +1,5 @@
 import { Ratings } from '@/components/ui/rating'
+import { formatCurrency } from '@/helper'
 import React from 'react'
 
 type Product = {
@@ -28,9 +29,7 @@ const ProductCard: React.FC<ProductProps> = ({ product }) => {
       </div>
       <p className="self-start mt-6 text-xs">({product.review}) Customer Reviews</p>
       <div className="flex items-center justify-between mt-6">
-        <p className="self-start text-2xl tracking-tight leading-none">
-          {product.price.toLocaleString('vi-VN', { currency: 'VND' })} đ
-        </p>
+        <p className="self-start text-2xl tracking-tight leading-none">{formatCurrency(product.price)}</p>
         <Ratings rating={product.rating} color="#FCA120" />
       </div>
     </div>
