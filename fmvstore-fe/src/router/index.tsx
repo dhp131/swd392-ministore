@@ -1,6 +1,7 @@
 import ErrorPage from '@/error-page'
 import { PublicLayout } from '@/layouts/public/PublicLayout'
 import UserLayout from '@/layouts/user/UserLayout'
+import ForgotPasswordPage from '@/pages/forgot-password'
 import HomePage from '@/pages/home'
 import LoginPage from '@/pages/login'
 import ProductsPage from '@/pages/products'
@@ -14,6 +15,10 @@ const router = createBrowserRouter([
   {
     path: '/login',
     element: <LoginPage />,
+  },
+  {
+    path: '/forgot-password',
+    element: <ForgotPasswordPage />,
   },
   {
     path: '/register',

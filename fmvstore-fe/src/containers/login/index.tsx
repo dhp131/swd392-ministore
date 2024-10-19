@@ -63,7 +63,11 @@ const LoginContainer = () => {
                 Register Now
               </Button>
               <div className="w-full flex justify-end text-[">
-                <Button variant={'link'} className="h-[52px] w-fit text-[#5b86e5]">
+                <Button
+                  onClick={() => navigate('/forgot-password')}
+                  variant={'link'}
+                  className="h-[52px] w-fit text-[#5b86e5]"
+                >
                   Forgot Password?
                 </Button>
               </div>
