@@ -15,10 +15,12 @@ import ministore.project.fmvstore.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.StringJoiner;
 import java.util.UUID;
 
 @Service
@@ -61,6 +63,7 @@ public class AuthenticationService {
                         Instant.now().plus(1, ChronoUnit.DAYS).toEpochMilli()
                 ))
                 .jwtID(UUID.randomUUID().toString())
+                .claim("scope",buildScope(user))
                 .build();
 
         Payload payload = new Payload(jwtClaimsSet.toJSONObject());
@@ -73,6 +76,20 @@ public class AuthenticationService {
         } catch (JOSEException e) {
             throw new RuntimeException(e);
         }
+    }
+    private String buildScope(UserEntity user) {
+        StringJoiner stringJoiner = new StringJoiner(" ");
+        if (!CollectionUtils.isEmpty(user.getRoles())) {
+            user.getRoles().forEach(role -> {
+                log.info("Adding role to scope: ROLE_" + role.getName());
+                stringJoiner.add("ROLE_" + role.getName());
+            });
+        } else {
+            log.warn("User has no roles assigned.");
+        }
+        String scope = stringJoiner.toString();
+        log.info("Generated scope: " + scope);
+        return scope;
     }
 
 }
