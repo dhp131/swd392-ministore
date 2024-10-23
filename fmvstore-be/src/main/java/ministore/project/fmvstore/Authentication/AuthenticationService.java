@@ -2,16 +2,12 @@ package ministore.project.fmvstore.Authentication;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import ministore.project.fmvstore.Introspect.IntrospectRequest;
-import ministore.project.fmvstore.Introspect.IntrospectResponse;
 import ministore.project.fmvstore.User.UserEntity;
 import ministore.project.fmvstore.User.UserRepository;
 import ministore.project.fmvstore.exception.AppException;
@@ -21,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -40,7 +35,6 @@ public class AuthenticationService {
 
     UserRepository userRepository;
     PasswordEncoder passwordEncoder;
-    InvalidatedTokenRepository invalidatedTokenRepository;
     public AuthenticationResponse authenticate(AuthenticationRequest request){
 
         var user = userRepository.findByUsername(request.getUsername())
@@ -96,39 +90,6 @@ public class AuthenticationService {
         String scope = stringJoiner.toString();
         log.info("Generated scope: " + scope);
         return scope;
-    }
-    public IntrospectResponse introspect(IntrospectRequest request)
-            throws JOSEException, ParseException {
-        var token = request.getToken();
-        boolean isValid = true;
-
-        try {
-            verifyToken(token);
-        } catch (AppException e) {
-            isValid = false;
-        }
-
-        return IntrospectResponse.builder()
-                .valid(isValid)
-                .build();
-    }
-    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
-        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-
-        SignedJWT signedJWT = SignedJWT.parse(token);
-
-        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-
-        var verified = signedJWT.verify(verifier);
-
-        if (!(verified && expiryTime.after(new Date())))
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-
-        if (invalidatedTokenRepository
-                .existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-
-        return signedJWT;
     }
 
 }

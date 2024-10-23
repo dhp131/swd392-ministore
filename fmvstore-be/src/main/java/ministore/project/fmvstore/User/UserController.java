@@ -4,7 +4,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ministore.project.fmvstore.Response.ApiResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -14,7 +13,8 @@ import java.util.Set;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
-    @PreAuthorize("hasRole('MANAGER')")
+    private final UserRepository userRepository;
+
     @GetMapping
     public ResponseEntity<ApiResponse<Set<UserResponse>>> getAllUsers() {
         return ResponseEntity.ok(ApiResponse.<Set<UserResponse>>builder()

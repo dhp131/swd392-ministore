@@ -9,6 +9,7 @@ import ministore.project.fmvstore.exception.ErrorCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.management.relation.Role;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -34,7 +35,6 @@ public class UserService {
         userEntity.setEmail(request.getEmail());
         userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
         userEntity.setNumber(request.getNumber());
-        userEntity.setAddress(request.getAddress());
         RoleEntity customerRole = roleRepository.findById(RoleEnum.CUSTOMER.name()).orElseThrow();
         userEntity.setRoles(Set.of(customerRole));
         userRepository.save(userEntity);
@@ -47,7 +47,6 @@ public class UserService {
         userEntity.setLastName(request.getLastName());
         userEntity.setEmail(request.getEmail());
         userEntity.setNumber(request.getNumber());
-        userEntity.setAddress(request.getAddress());
         userRepository.save(userEntity);
     }
     public Set<UserResponse> getAllUsers() {
@@ -60,8 +59,7 @@ public class UserService {
                     userResponse.setLastName(userEntity.getLastName());
                     userResponse.setEmail(userEntity.getEmail());
                     userResponse.setNumber(userEntity.getNumber());
-                    userResponse.setAddress(userEntity.getAddress());
-                    userResponse.setRoles(userEntity.getRoles().stream()
+                    userResponse.setRoles((Role) userEntity.getRoles().stream()
                             .map(RoleEntity::getName)
                             .collect(Collectors.toSet()));
                     return userResponse;
