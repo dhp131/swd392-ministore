@@ -25,6 +25,7 @@ public enum ErrorCode {
     ALREADY_PURCHASED(10014, "Already purchased", HttpStatus.BAD_REQUEST),
     PAYMENT_ERROR(10015, "PAYMENT_ERROR", HttpStatus.BAD_REQUEST),
     COURSE_NOT_FOUND(10016, "Course Not Found", HttpStatus.NOT_FOUND),
+    PROMOTION_NOT_FOUND(10017,"Promotion not found", HttpStatus.NOT_FOUND)
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
