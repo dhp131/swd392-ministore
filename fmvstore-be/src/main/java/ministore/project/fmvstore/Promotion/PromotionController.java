@@ -3,6 +3,7 @@ package ministore.project.fmvstore.Promotion;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import ministore.project.fmvstore.Response.ApiResponse;
 import ministore.project.fmvstore.exception.AppException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,9 +20,11 @@ public class PromotionController {
 
     @PostMapping("/create")
     @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
-    public ResponseEntity<Promotion> createPromotion(@RequestBody PromotionDTO promotionDTO){
-        Promotion promotion =promotionService.createPromotion(promotionDTO);
-        return ResponseEntity.ok(promotion);
+    public ResponseEntity<ApiResponse<String>> createPromotion(@RequestBody PromotionDTO promotionDTO){
+        promotionService.createPromotion(promotionDTO);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .result("Promotion Created Successfully")
+                .build());
     }
 
     @GetMapping("get_all_promotion")

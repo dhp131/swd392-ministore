@@ -21,7 +21,7 @@ public class PromotionService {
         return promotionRepository.findAll();
     }
 
-    public Promotion createPromotion(PromotionDTO promotionDTO) {
+    public void  createPromotion(PromotionDTO promotionDTO) {
         String code = generateRandomCode(8);
         Promotion promotion = Promotion.builder()
                 .code(code)
@@ -29,8 +29,9 @@ public class PromotionService {
                 .startDate(promotionDTO.getStartDate())
                 .endDate(promotionDTO.getEndDate())
                 .build();
-        return promotionRepository.save(promotion);
+        promotionRepository.save(promotion);
     }
+
 
     public void deletePromotionId(Long promotionId){
         Promotion promotions = promotionRepository.findById(promotionId)
