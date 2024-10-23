@@ -1,18 +1,17 @@
 package ministore.project.fmvstore.User;
 
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import jakarta.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UserCreationRequest {
-    @Size(min = 4)
-    String username;
-
+@Getter
+@Setter
+public class UserUpdateRequest {
     @Size(min = 6, max = 20)
     String password;
     String firstName;

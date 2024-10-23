@@ -1,23 +1,24 @@
 package ministore.project.fmvstore.User;
 
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import jakarta.validation.constraints.Size;
+
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
-public class UserCreationRequest {
-    @Size(min = 4)
+@FieldDefaults(level = AccessLevel.PRIVATE)
+public class UserResponse {
+    String id;
     String username;
-
-    @Size(min = 6, max = 20)
-    String password;
     String firstName;
     String lastName;
     String email;
     int number;
     String address;
+    private Set<String> roles;
+
 }

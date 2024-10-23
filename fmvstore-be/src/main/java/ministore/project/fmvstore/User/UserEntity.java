@@ -1,10 +1,10 @@
 package ministore.project.fmvstore.User;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
+import ministore.project.fmvstore.Role.RoleEntity;
+
+import java.util.Set;
 
 @Entity
 @Data
@@ -23,6 +23,8 @@ public class UserEntity {
     private String lastName;
     private int number;
     private String email;
+    private String address;
 
-
+    @ManyToMany
+    private Set<RoleEntity> roles;
 }
