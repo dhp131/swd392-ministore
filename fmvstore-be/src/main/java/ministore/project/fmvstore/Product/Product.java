@@ -1,9 +1,6 @@
 package ministore.project.fmvstore.Product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,13 +14,14 @@ import ministore.project.fmvstore.Category.Category;
 @Builder
 public class Product {
     @Id
-    private int Id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String Id;
     private String name;
     private double price;
     private String imageUrl;
     private int status;
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "category_id")
     private Category category;
 
 }
