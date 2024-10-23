@@ -19,4 +19,5 @@ public class UserCreationRequest {
     String lastName;
     String email;
     int number;
+    String address;
 }
