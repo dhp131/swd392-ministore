@@ -1,8 +1,8 @@
-package ministore.project.fmvstore.product;
+package ministore.project.fmvstore.supplier;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface SupplierRepository extends JpaRepository<Supplier, Long> {
 }

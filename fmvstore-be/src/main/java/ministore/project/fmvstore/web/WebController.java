@@ -1,7 +1,8 @@
-package ministore.project.fmvstore.product;
+package ministore.project.fmvstore.web;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ProductController {
+public class WebController {
+
 }

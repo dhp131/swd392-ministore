@@ -1,7 +1,7 @@
-package ministore.project.fmvstore.product;
+package ministore.project.fmvstore.order;
 
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class ProductController {
+public class OrderController {
 }

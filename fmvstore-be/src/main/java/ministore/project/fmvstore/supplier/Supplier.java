@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package ministore.project.fmvstore.category;
+package ministore.project.fmvstore.supplier;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -15,14 +15,18 @@ import lombok.NoArgsConstructor;
  *
  * @author toni
  */
+
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Category {
+public class Supplier {
     @Id
-    private int categoryId;
-    private String categoryName;
+    private int supplierId;
+    private String supplierName;
+    private String supplierAddress;
+    private String supplierPhone;
+    private String supplierContactInformation;
 
 }
