@@ -1,13 +1,18 @@
 package ministore.project.fmvstore.Category;
 
-import jakarta.persistence.OneToMany;
-import ministore.project.fmvstore.Product.Product;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import ministore.project.fmvstore.Product.ProductResponse;
 
 import java.util.List;
-
+@Builder
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CategoryResponse {
     String name;
     String description;
-    @OneToMany
-    List<Product> products;
+    List<ProductResponse> products;
 }
