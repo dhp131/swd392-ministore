@@ -23,6 +23,7 @@ public class UserEntity {
     private String lastName;
     private int number;
     private String email;
+    private String address;
 
     @ManyToMany
     private Set<RoleEntity> roles;

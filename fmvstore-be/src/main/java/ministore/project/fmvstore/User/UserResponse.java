@@ -4,7 +4,7 @@ package ministore.project.fmvstore.User;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.management.relation.Role;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +18,7 @@ public class UserResponse {
     String lastName;
     String email;
     int number;
-    Role roles;
+    String address;
+    private Set<String> roles;
 
 }
