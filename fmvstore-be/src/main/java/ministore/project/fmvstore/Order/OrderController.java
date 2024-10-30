@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
@@ -15,7 +17,7 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<String>> createOrder(@RequestBody CreateOrderRequest request) {
-        orderService.createOrder(request.getOrderDetailDTOs());
+        orderService.createOrder(request.getOrderDetailDTOs(), request.getPromotionCode()); // Pass promotion code
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .result("Order Created Successfully")
                 .build());
@@ -34,6 +36,13 @@ public class OrderController {
         orderService.rejectOrder(orderId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .result("Order Rejected Successfully")
+                .build());
+    }
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getAllOrders() {
+        return ResponseEntity.ok(ApiResponse.<List<OrderResponse>>builder()
+                .result(orderService.getAllOrders())
                 .build());
     }
 }

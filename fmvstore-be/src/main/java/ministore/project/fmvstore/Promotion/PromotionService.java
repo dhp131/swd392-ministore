@@ -6,7 +6,6 @@ import ministore.project.fmvstore.exception.AppException;
 import ministore.project.fmvstore.exception.ErrorCode;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.List;
 
 import static lombok.AccessLevel.PRIVATE;
@@ -22,9 +21,9 @@ public class PromotionService {
     }
 
     public void  createPromotion(PromotionDTO promotionDTO) {
-        String code = generateRandomCode(8);
+
         Promotion promotion = Promotion.builder()
-                .code(code)
+                .code(promotionDTO.getCode())
                 .discountPercentage(promotionDTO.getDiscountPercentage())
                 .startDate(promotionDTO.getStartDate())
                 .endDate(promotionDTO.getEndDate())
@@ -40,15 +39,15 @@ public class PromotionService {
     }
 
 
-    private String generateRandomCode(int length) {
-        SecureRandom random = new SecureRandom();
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-        StringBuilder code =  new StringBuilder();
-        for (int i = 0; i < length; i++) {
-            code.append(characters.charAt(random.nextInt(characters.length())));
-        }
-        return code.toString();
-    }
+//    private String generateRandomCode(int length) {
+//        SecureRandom random = new SecureRandom();
+//        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+//        StringBuilder code =  new StringBuilder();
+//        for (int i = 0; i < length; i++) {
+//            code.append(characters.charAt(random.nextInt(characters.length())));
+//        }
+//        return code.toString();
+//    }
 
 
 

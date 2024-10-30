@@ -46,6 +46,7 @@ public class UserService {
         userEntity.setFirstName(request.getFirstName());
         userEntity.setLastName(request.getLastName());
         userEntity.setEmail(request.getEmail());
+        userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
         userEntity.setNumber(request.getNumber());
         userEntity.setAddress(request.getAddress());
         userRepository.save(userEntity);
@@ -67,5 +68,28 @@ public class UserService {
                     return userResponse;
                 })
                 .collect(Collectors.toSet());
+    }
+    public UserResponse getUserById(String userId) {
+        UserEntity userEntity = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        UserResponse userResponse = new UserResponse();
+        userResponse.setId(userEntity.getId());
+        userResponse.setUsername(userEntity.getUsername());
+        userResponse.setFirstName(userEntity.getFirstName());
+        userResponse.setLastName(userEntity.getLastName());
+        userResponse.setEmail(userEntity.getEmail());
+        userResponse.setNumber(userEntity.getNumber());
+        userResponse.setAddress(userEntity.getAddress());
+        userResponse.setRoles(userEntity.getRoles().stream()
+                .map(RoleEntity::getName)
+                .collect(Collectors.toSet()));
+        return userResponse;
+    }
+    public void updateUserRole(String userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        RoleEntity employeeRole = roleRepository.findById(RoleEnum.EMPLOYEE.name()).orElseThrow();
+        user.setRoles(Set.of(employeeRole));
+        userRepository.save(user);
     }
 }

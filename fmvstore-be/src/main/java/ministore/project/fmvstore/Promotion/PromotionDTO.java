@@ -10,6 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PromotionDTO {
+    private String code;
     private double discountPercentage;
     private Date startDate;
     private Date endDate;

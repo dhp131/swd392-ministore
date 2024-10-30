@@ -8,4 +8,5 @@ import java.util.List;
 @Data
 public class CreateOrderRequest {
     private List<OrderDetailDTO> orderDetailDTOs;
+    private String promotionCode;
 }

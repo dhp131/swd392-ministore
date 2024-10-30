@@ -24,6 +24,7 @@ public enum ErrorCode {
     COURSE_NOT_FOUND(10016, "Course Not Found", HttpStatus.NOT_FOUND),
     PROMOTION_NOT_FOUND(10017,"Promotion not found", HttpStatus.NOT_FOUND),
     INSUFFICIENT_BALANCE(10018, "Insufficient balance", HttpStatus.BAD_REQUEST),
+    PROMOTION_EXPIRED(10019, "Promotion expired", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
