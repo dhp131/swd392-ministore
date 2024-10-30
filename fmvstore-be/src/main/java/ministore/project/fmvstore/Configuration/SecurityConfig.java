@@ -39,7 +39,6 @@ public class SecurityConfig {
             "/auth/logout",
             "/auth/refresh",
             "/api/mail/send",
-            "/purchases",
             "/payment/create",
             "/users/forgot-password",
             "/payment/return",
@@ -55,7 +54,7 @@ public class SecurityConfig {
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/verify").permitAll()
                         .requestMatchers(HttpMethod.GET, "/courses/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/payment/return**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/payment/verify").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/reset-password**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/courses").permitAll()
                         .requestMatchers(

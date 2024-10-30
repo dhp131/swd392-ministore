@@ -16,16 +16,14 @@ public enum ErrorCode {
     UNAUTHORIZED(1007, "You do not have permission", HttpStatus.FORBIDDEN),
     INVALID_DOB(1008, "Your age must be at least {min}", HttpStatus.BAD_REQUEST),
     CANNOT_SEND_EMAIL(1009, "Cant send email", HttpStatus.BAD_REQUEST),
-    INVALID_OTP(1010, "Invalid otp", HttpStatus.BAD_REQUEST),
-    OTP_EXPIRED(1010, "OTP_EXPIRED otp", HttpStatus.BAD_REQUEST),
-    OTP_NOT_FOUND(1010, "OTP_NOT_FOUND", HttpStatus.BAD_REQUEST),
-    USER_DISABLED(1011,"Your account is pending" , HttpStatus.UNAUTHORIZED),
+    ORDER_NOT_FOUND(1010, "Order not found", HttpStatus.NOT_FOUND),
     RESOURCE_NOT_FOUND(10012, "Resource not found", HttpStatus.NOT_FOUND),
     INSUFFICIENT_FUNDS(10013, "Insufficient funds", HttpStatus.BAD_REQUEST),
     ALREADY_PURCHASED(10014, "Already purchased", HttpStatus.BAD_REQUEST),
     PAYMENT_ERROR(10015, "PAYMENT_ERROR", HttpStatus.BAD_REQUEST),
     COURSE_NOT_FOUND(10016, "Course Not Found", HttpStatus.NOT_FOUND),
-    PROMOTION_NOT_FOUND(10017,"Promotion not found", HttpStatus.NOT_FOUND)
+    PROMOTION_NOT_FOUND(10017,"Promotion not found", HttpStatus.NOT_FOUND),
+    INSUFFICIENT_BALANCE(10018, "Insufficient balance", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
