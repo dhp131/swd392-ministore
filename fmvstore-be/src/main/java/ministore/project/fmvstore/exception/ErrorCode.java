@@ -25,6 +25,7 @@ public enum ErrorCode {
     PROMOTION_NOT_FOUND(10017,"Promotion not found", HttpStatus.NOT_FOUND),
     INSUFFICIENT_BALANCE(10018, "Insufficient balance", HttpStatus.BAD_REQUEST),
     PROMOTION_EXPIRED(10019, "Promotion expired", HttpStatus.BAD_REQUEST),
+    ROLE_NOT_EXISTED(10020, "Role not existed", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {

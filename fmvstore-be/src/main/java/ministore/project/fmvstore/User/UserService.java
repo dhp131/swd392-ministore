@@ -6,9 +6,11 @@ import ministore.project.fmvstore.Role.RoleEnum;
 import ministore.project.fmvstore.Role.RoleRepository;
 import ministore.project.fmvstore.exception.AppException;
 import ministore.project.fmvstore.exception.ErrorCode;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -51,6 +53,7 @@ public class UserService {
         userEntity.setAddress(request.getAddress());
         userRepository.save(userEntity);
     }
+
     public Set<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(userEntity -> {
@@ -88,8 +91,11 @@ public class UserService {
     public void updateUserRole(String userId) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-        RoleEntity employeeRole = roleRepository.findById(RoleEnum.EMPLOYEE.name()).orElseThrow();
-        user.setRoles(Set.of(employeeRole));
+
+        RoleEntity employeeRole = roleRepository.findByName(RoleEnum.EMPLOYEE.name())
+                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_EXISTED));
+
+        user.setRoles(new HashSet<>(Set.of(employeeRole)));
         userRepository.save(user);
     }
 }

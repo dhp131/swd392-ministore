@@ -49,12 +49,12 @@ public class UserController {
     }
     //Update User to Employee
     @PreAuthorize("hasRole('MANAGER')")
-    @PutMapping("/{userId}/updateRole")
+    @PostMapping("/{userId}/updateRole")
     public ResponseEntity<ApiResponse<String>> updateUserRole(
             @PathVariable String userId) {
         userService.updateUserRole(userId);
         return ResponseEntity.ok(ApiResponse.<String>builder()
-                .result("USER ROLE UPDATE SUCCESSFULLY")
+                .result("USER ROLE UPDATED SUCCESSFULLY")
                 .build());
     }
 

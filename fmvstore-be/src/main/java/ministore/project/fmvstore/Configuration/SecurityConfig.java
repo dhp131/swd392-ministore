@@ -42,10 +42,7 @@ public class SecurityConfig {
             "/payment/create",
             "/users/forgot-password",
             "/payment/return",
-            "/users/reset-password",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-ui.html",
+
     };
 
     @Bean
