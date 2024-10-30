@@ -18,13 +18,13 @@ public class CategoryService {
         return categoryRepository.findAll().stream()
                 .map(category -> CategoryResponse.builder()
                         .name(category.getName())
-                        .description(category.getDescription()) // Ensure Category entity has a getDescription method
+                        .description(category.getDescription())
                         .products(category.getProducts().stream()
                                 .map(product -> ProductResponse.builder()
                                         .name(product.getName())
                                         .price(product.getPrice())
-                                        .imageUrl(product.getImageUrl()) // Ensure Product entity has a getImageUrl method
-                                        .status(product.getStatus()) // Ensure Product entity has a getStatus method
+                                        .imageUrl(product.getImageUrl()) 
+                                        .status(product.getStatus())
                                         .build())
                                 .collect(Collectors.toList()))
                         .build())
