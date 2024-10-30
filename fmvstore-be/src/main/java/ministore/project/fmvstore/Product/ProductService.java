@@ -19,8 +19,15 @@ public class ProductService {
     private ProductRepository productRepository;
     private CategoryRepository categoryRepository;
 
-    public List<Product> getAllProducts() {
-        return productRepository.findAll();
+    public List<ProductResponse> getAllProducts() {
+        return productRepository.findAll().stream()
+                .map(product -> ProductResponse.builder()
+                        .name(product.getName())
+                        .price(product.getPrice())
+                        .imageUrl(product.getImageUrl())
+                        .status(product.getStatus())
+                        .build())
+                .collect(java.util.stream.Collectors.toList());
     }
     public void createProduct(ProductCreationRequest request) {
         Category category = categoryRepository.findById(request.getCategoryId())

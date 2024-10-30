@@ -21,7 +21,7 @@ public class ProductController {
     final CloudinaryService cloudinaryService;
     private ProductService productService;
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
     }
 
