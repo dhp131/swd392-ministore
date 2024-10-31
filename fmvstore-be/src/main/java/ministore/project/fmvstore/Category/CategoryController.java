@@ -30,4 +30,25 @@ public class CategoryController {
                 .result("Category Created Successfully")
                 .build());
     }
+    @GetMapping("/{id}")
+    public CategoryResponse getCategoryById(@PathVariable Integer id){
+        return categoryService.getCategoryById(id);
+    }
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> updateCategory(@PathVariable Integer id, @RequestBody @Valid CategoryRequest request){
+        categoryService.updateCategory(id, request);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .result("Category Updated Successfully")
+                .build());
+    }
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteCategory(@PathVariable Integer id){
+        categoryService.deleteCategory(id);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .result("Category Deleted Successfully")
+                .build());
+    }
+
 }

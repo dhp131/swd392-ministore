@@ -44,13 +44,18 @@ public class UserService {
     public void updateUser(String userId, UserUpdateRequest request) {
         UserEntity userEntity = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-
-        userEntity.setFirstName(request.getFirstName());
-        userEntity.setLastName(request.getLastName());
-        userEntity.setEmail(request.getEmail());
-        userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
-        userEntity.setNumber(request.getNumber());
-        userEntity.setAddress(request.getAddress());
+        if(request.getFirstName() != null)
+            userEntity.setFirstName(request.getFirstName());
+        if(request.getLastName() != null)
+            userEntity.setLastName(request.getLastName());
+        if(request.getEmail() != null)
+            userEntity.setEmail(request.getEmail());
+        if(request.getPassword() != null)
+            userEntity.setPassword(passwordEncoder.encode(request.getPassword()));
+        if(request.getNumber() != 0)
+            userEntity.setNumber(request.getNumber());
+        if(request.getAddress() != null)
+            userEntity.setAddress(request.getAddress());
         userRepository.save(userEntity);
     }
 

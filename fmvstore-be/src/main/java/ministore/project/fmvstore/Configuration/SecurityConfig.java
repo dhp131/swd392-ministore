@@ -43,22 +43,17 @@ public class SecurityConfig {
             "/users/forgot-password",
             "/payment/return",
 
+
     };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/verify").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/courses/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/payment/verify").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/reset-password**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/courses").permitAll()
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/swagger-ui.html"
-                        ).permitAll()
+                        .requestMatchers(HttpMethod.GET, "category").permitAll()
+                        .requestMatchers(HttpMethod.GET, "products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "store/users/verify").permitAll()
+
                         .anyRequest().authenticated());
         httpSecurity.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer ->

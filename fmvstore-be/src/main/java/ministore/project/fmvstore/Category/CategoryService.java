@@ -23,7 +23,7 @@ public class CategoryService {
                                 .map(product -> ProductResponse.builder()
                                         .name(product.getName())
                                         .price(product.getPrice())
-                                        .imageUrl(product.getImageUrl()) 
+                                        .imageUrl(product.getImageUrl())
                                         .status(product.getStatus())
                                         .build())
                                 .collect(Collectors.toList()))
@@ -36,5 +36,29 @@ public class CategoryService {
                 .name(request.getName())
                 .build();
         categoryRepository.save(category);
+    }
+    public CategoryResponse getCategoryById(Integer id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        return CategoryResponse.builder()
+                .name(category.getName())
+                .description(category.getDescription())
+                .products(category.getProducts().stream()
+                        .map(product -> ProductResponse.builder()
+                                .name(product.getName())
+                                .price(product.getPrice())
+                                .imageUrl(product.getImageUrl())
+                                .status(product.getStatus())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+    public void updateCategory(Integer id, CategoryRequest request) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        category.setName(request.getName());
+        categoryRepository.save(category);
+    }
+    public void deleteCategory(Integer id) {
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Category not found"));
+        categoryRepository.delete(category);
     }
 }
