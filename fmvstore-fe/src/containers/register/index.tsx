@@ -90,7 +90,7 @@ const RegisterContainer = () => {
           </div>
 
           <div className="w-full flex justify-end">
-            <Link to={'/'}>FBT Terms & Codnitions</Link>
+            <Link to={'/'}>FMV Terms & Codnitions</Link>
           </div>
         </div>
       </div>

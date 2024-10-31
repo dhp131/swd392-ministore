@@ -106,7 +106,7 @@ const ProductDetailContainer = () => {
         <div className="w-1/2 flex flex-col">
           <div className="text-[20px] mb-4">Rau tươi</div>
           <div className="text-[24px] font-bold mb-2">Dưa leo</div>
-          <div className="mb-1">Tất cả sản phẩm được kiểm định chất lượng và bán bởi chuỗi cửa hàng tiện lợi FBT</div>
+          <div className="mb-1">Tất cả sản phẩm được kiểm định chất lượng và bán bởi chuỗi cửa hàng tiện lợi FMV</div>
           <div className="text-[12px] flex gap-4 items-center mb-8">
             <div>
               <span className="font-bold">4K+</span> sold

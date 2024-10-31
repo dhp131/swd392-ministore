@@ -4,9 +4,9 @@ server:
     context-path: /store
 spring:
   datasource:
-    url: "jdbc:mysql://localhost:3306/final"
+    url: "jdbc:mysql://localhost:3306/FMVStore"
     username: root
-    password: root
+    password: MyRootDatabase
   jpa:
     hibernate:
       ddl-auto: update
@@ -22,3 +22,8 @@ cloudinary:
 jwt:
   signerKey: "IIr2bnAZ4px904KFCEeujVDG2HKNN1Fw8YDAmzYnq/XU2Rb6kPWHIciUYPetDlU0"
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

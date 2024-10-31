@@ -76,7 +76,7 @@ const UserFooter: React.FC = () => {
           </div>
         </div>
         <div className="flex flex-wrap gap-5 justify-between mt-24 w-full tracking-wide text-black">
-          <p>@FBT 2024. All rights reserved</p>
+          <p>@FMV 2024. All rights reserved</p>
           <div className="flex gap-5">
             <a href="#" className="grow">
               Privacy Policy

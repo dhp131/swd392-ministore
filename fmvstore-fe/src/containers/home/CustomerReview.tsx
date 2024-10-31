@@ -12,7 +12,7 @@ const customerReviews = [
     name: 'Lê Quang Huy',
     position: 'Traveler',
     review:
-      '“Tôi ghé FBT hàng ngày để mua đồ uống và snack trên đường đi làm. Nhân viên thân thiện và tôi luôn cảm thấy tiện lợi với các mặt hàng có sẵn tại đây. Một điểm cộng lớn là thanh toán cực kỳ nhanh.”',
+      '“Tôi ghé FMV hàng ngày để mua đồ uống và snack trên đường đi làm. Nhân viên thân thiện và tôi luôn cảm thấy tiện lợi với các mặt hàng có sẵn tại đây. Một điểm cộng lớn là thanh toán cực kỳ nhanh.”',
     rating: 5,
   },
   {
@@ -21,7 +21,7 @@ const customerReviews = [
     name: 'Nguyễn Thị Hà',
     position: 'Housewife',
     review:
-      '“Tôi thích mua đồ ăn nhanh và đồ uống tại FBT. Các sản phẩm tại đây đa dạng và phong phú. Tôi luôn mua được những món ăn ngon và tiện lợi cho cả gia đình.”',
+      '“Tôi thích mua đồ ăn nhanh và đồ uống tại FMV. Các sản phẩm tại đây đa dạng và phong phú. Tôi luôn mua được những món ăn ngon và tiện lợi cho cả gia đình.”',
     rating: 4,
   },
   {
@@ -30,7 +30,7 @@ const customerReviews = [
     name: 'Lê Thị Kim',
     position: 'UI Designer',
     review:
-      'FBT đã trở thành điểm đến quen thuộc của tôi. Từ thực phẩm tươi đến các nhu yếu phẩm hàng ngày, mọi thứ đều có. Tôi rất thích chương trình khuyến mãi và các ưu đãi thường xuyên mà FBT cung cấp.',
+      'FMV đã trở thành điểm đến quen thuộc của tôi. Từ thực phẩm tươi đến các nhu yếu phẩm hàng ngày, mọi thứ đều có. Tôi rất thích chương trình khuyến mãi và các ưu đãi thường xuyên mà FMV cung cấp.',
     rating: 4,
   },
 ]
@@ -52,7 +52,7 @@ const CustomerReview = () => {
         </h1>
       </div>
       <div className="w-[600px] text-center text-[#8A8A8A]">
-        Với chuỗi cửa hàng tiện lợi FBT, các cá nhân, tổ chức tại Việt Nam có thể trở thành đối tác nhượng quyền với 3
+        Với chuỗi cửa hàng tiện lợi FMV, các cá nhân, tổ chức tại Việt Nam có thể trở thành đối tác nhượng quyền với 3
         quy mô, tùy vào từng diện tích của khu vực cũng như khả năng kinh doanh của cá nhân, tổ chức đó.
       </div>
       <div className="relative h-[360px] mt-12 w-full">

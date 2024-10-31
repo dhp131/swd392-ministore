@@ -18,15 +18,15 @@ const LoginContainer = () => {
           <div>
             <div className="flex items-center shrink-0 flex-nowrap h-[64px] text-[64px] leading-[64px] whitespace-nowrap font-normal">
               <span className="font-['Volkhov'] text-[#389c5a]">F</span>
-              <span className="font-['Volkhov'] text-[#fca120]">B</span>
-              <span className="font-['Volkhov'] text-[#399c5a]">T</span>
+              <span className="font-['Volkhov'] text-[#fca120]">M</span>
+              <span className="font-['Volkhov'] text-[#399c5a]">V</span>
             </div>
             <span className="h-[16px] text-[16px]whitespace-nowrap">Food, Beverages & Treats</span>
           </div>
 
           <div className="flex flex-col justify-center gap-8">
             <div className="flex flex-col gap-6">
-              <span className="h-[40px] text-[30px] leading-[40px]">Sign In To FBT</span>
+              <span className="h-[40px] text-[30px] leading-[40px]">Sign In To FMV</span>
               <div className="flex gap-4">
                 <Button variant={'outline'} className="px-6 flex gap-2 h-[52px]">
                   <img src={GoogleIcon} alt="gmail-icon" className="" />
@@ -75,7 +75,7 @@ const LoginContainer = () => {
           </div>
 
           <div className="w-full flex justify-end">
-            <Link to={'/'}>FBT Terms & Codnitions</Link>
+            <Link to={'/'}>FMV Terms & Codnitions</Link>
           </div>
         </div>
       </div>

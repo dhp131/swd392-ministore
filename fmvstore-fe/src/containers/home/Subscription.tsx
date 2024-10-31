@@ -8,7 +8,7 @@ const Subscription = () => {
         <div className="text-[40px] font-bold">Đăng ký nhận thông tin mới nhất</div>
         <div className="text-center px-12">
           Không quá khi nói bạn có thể làm một food tour vòng quanh thế giới chỉ với một vòng "lướt" trên thực đơn tại
-          quầy đồ ăn của FBT.
+          quầy đồ ăn của FMV.
         </div>
         <Input placeholder="yourmail@gmail.com" className="h-[64px] text-[24px] text-[#000000] bg-[#FFFFFF]" />
         <Button variant={'custom'} size={'custom'} className="bg-[#FF4343]">

@@ -22,8 +22,8 @@ const CardPromotion: React.FC = () => {
           <div className="mt-8">
             <h3 className="text-black">DESCRIPTION</h3>
             <p className="mt-6 text-neutral-500 max-md:mr-0 max-md:max-w-full">
-              Mọi lúc, mọi nơi FBT cung cấp đầy đủ các mệnh giá của tất cả các nhà mạng: Viettel, Mobifone, Vinafone,
-              Vietnammobie, Gmobie,... Không những thế FBT còn "sát cánh" với các game thủ trên mọi mặt trận bằng cách
+              Mọi lúc, mọi nơi FMV cung cấp đầy đủ các mệnh giá của tất cả các nhà mạng: Viettel, Mobifone, Vinafone,
+              Vietnammobie, Gmobie,... Không những thế FMV còn "sát cánh" với các game thủ trên mọi mặt trận bằng cách
               cung cấp dịch vụ nạp thẻ game online trả trước đang phổ biến tại Việt Nam: Vinagame, Oncash, Garena,…
             </p>
           </div>

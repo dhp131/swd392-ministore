@@ -31,7 +31,7 @@ const LorealPromotion: React.FC = () => {
             MUA NGAY
           </Button>
           <div className="flex flex-col rounded-xl max-w-[394px] text-zinc-700 mt-12">
-            <h2 className="self-start text-3xl font-medium">Nhanh chân đến FBT nào!!!</h2>
+            <h2 className="self-start text-3xl font-medium">Nhanh chân đến FMV nào!!!</h2>
             <div className="flex gap-8 mt-6 whitespace-nowrap">
               {timeUnits.map((unit, index) => (
                 <div key={index} className="flex flex-col flex-1">

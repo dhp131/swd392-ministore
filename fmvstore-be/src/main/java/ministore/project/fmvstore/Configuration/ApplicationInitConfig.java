@@ -25,7 +25,7 @@ public class ApplicationInitConfig {
 
     @Bean
     ApplicationRunner applicationRunner(UserRepository userRepository, PasswordEncoder passwordEncoder) {
-        return _ -> {
+        return args -> {
             if (roleRepository.findByName(RoleEnum.MANAGER.name()).isEmpty()) {
                 RoleEntity managerRole = new RoleEntity();
                 managerRole.setName(RoleEnum.MANAGER.name());
