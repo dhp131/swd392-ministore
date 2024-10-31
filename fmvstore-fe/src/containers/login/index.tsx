@@ -5,9 +5,61 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Link, useNavigate } from 'react-router-dom'
+import { z } from 'zod'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { authService } from '@/services/auth'
+import { Flip, toast } from 'react-toastify'
+import { useSetAtom } from 'jotai'
+import { userAtom } from '@/stores/user'
+
+const formSchema = z.object({
+  username: z.string().min(3).max(20),
+  password: z.string().min(3).max(20),
+})
 
 const LoginContainer = () => {
   const navigate = useNavigate()
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      username: '',
+      password: '',
+    },
+  })
+
+  const setUser = useSetAtom(userAtom)
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      console.log(values)
+      const res = await authService.login(values)
+      const token = res.result.token
+      localStorage.setItem('access_token', token)
+      setUser({
+        username: values.username,
+      })
+      toast.success('Login successfully!', {
+        position: 'top-center',
+        closeOnClick: true,
+        theme: 'light',
+        transition: Flip,
+        hideProgressBar: true,
+      })
+      navigate('/')
+    } catch (error) {
+      console.error(error)
+      toast.error('Login failed!', {
+        position: 'top-center',
+        closeOnClick: true,
+        theme: 'light',
+        transition: Flip,
+        hideProgressBar: true,
+      })
+    }
+  }
   return (
     <div className="w-full h-[100vh] bg-[#fff] flex justify-center items-center py-auto">
       <div className="w-[1400px] rounded-tl-none rounded-tr-[30px] rounded-br-[30px] rounded-bl-none border-solid border border-[#dbdbdb] relative flex">
@@ -45,17 +97,59 @@ const LoginContainer = () => {
               <div className="w-[30px] h-[5px] bg-[#828282]" />
             </div>
 
-            <div className="flex flex-col gap-4">
-              <Input
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                type="email"
-                placeholder="Email"
-              />
-              <PasswordInput
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                placeholder="Password"
-              />
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                          placeholder="Username"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <PasswordInput
+                          className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                          placeholder="Password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" variant={'default'} className="h-[52px]">
+                  Sign In
+                </Button>
+                <Button variant={'outline'} className="h-[52px]" onClick={() => navigate('/register')}>
+                  Register Now
+                </Button>
+                <div className="w-full flex justify-end text-[">
+                  <Button
+                    onClick={() => navigate('/forgot-password')}
+                    variant={'link'}
+                    className="h-[52px] w-fit text-[#5b86e5]"
+                  >
+                    Forgot Password?
+                  </Button>
+                </div>
+              </form>
+            </Form>
 
+            {/* <div className="flex flex-col gap-4">
               <Button onClick={() => navigate('/')} variant={'default'} className="h-[52px]">
                 Sign In
               </Button>
@@ -71,7 +165,7 @@ const LoginContainer = () => {
                   Forgot Password?
                 </Button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="w-full flex justify-end">

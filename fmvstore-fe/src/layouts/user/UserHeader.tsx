@@ -27,6 +27,9 @@ import ProductImage2 from '@/assets/product-items/image2.png'
 import { formatCurrency } from '@/helper'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
+import { useSetAtom } from 'jotai'
+import { userAtom } from '@/stores/user'
+import { useNavigate } from 'react-router-dom'
 
 const UserHeader = () => {
   const cartItem = 2
@@ -48,6 +51,15 @@ const UserHeader = () => {
       quantity: 4,
     },
   ]
+
+  const setUser = useSetAtom(userAtom)
+  const navigate = useNavigate()
+
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem('access_token')
+    navigate('/login')
+  }
 
   return (
     <header className="flex flex-col items-center my-12">
@@ -141,14 +153,10 @@ const UserHeader = () => {
                   <UsersIcon className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCardIcon className="mr-2 h-4 w-4" />
-                  <span>Billing</span>
-                </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <LogOutIcon className="w-4 h-4 mr-2" />
+              <DropdownMenuItem onClick={logout}>
+                <LogOutIcon className="w-4 h-4 mr-2 cursor-pointer" />
                 <span>Log out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
