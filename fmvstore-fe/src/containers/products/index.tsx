@@ -24,6 +24,10 @@ import ProductItem13 from '@/assets/product-items/image13.png'
 import ProductItem14 from '@/assets/product-items/image14.png'
 import ProductItem15 from '@/assets/product-items/image15.png'
 import ProductCard from '@/components/common/ProductCard'
+import { useEffect, useState } from 'react'
+import { Product } from '@/types'
+import { useQuery } from '@tanstack/react-query'
+import { categoryService } from '@/services/category'
 
 const productItems = [
   {
@@ -164,6 +168,27 @@ const productItems = [
 ]
 
 const ProductsContainer = () => {
+  const [selectedCategory, setSelectedCategory] = useState('')
+  const [products, setProducts] = useState<Product[]>([])
+  const { data: categories } = useQuery({
+    queryKey: ['categories'],
+    queryFn: categoryService.getAllCategories,
+  })
+
+  const onChangeCategory = (category: string) => {
+    setProducts([])
+    setSelectedCategory(category)
+    const selectedProducts = categories?.find((item) => item.name === category)?.products
+    setProducts(selectedProducts || [])
+  }
+
+  useEffect(() => {
+    if (categories && categories.length > 0) {
+      setSelectedCategory(categories[0].name)
+      setProducts(categories[0].products)
+    }
+  }, [categories])
+
   return (
     <PageLayout>
       <div className="flex flex-col">
@@ -174,42 +199,61 @@ const ProductsContainer = () => {
             </BreadcrumbItem>
             <BreadcrumbSeparator />
             <BreadcrumbItem>
-              <BreadcrumbLink href="/products">Rau củ & Trái cây</BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Rau tươi</BreadcrumbPage>
+              <BreadcrumbPage>{selectedCategory}</BreadcrumbPage>
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
         <div className="flex items-center gap-4 my-8">
-          <div className="font-bold text-3xl">Rau Tươi</div>
-          <div>(57)</div>
+          <div className="font-bold text-3xl">{selectedCategory}</div>
+          <div>({products.length})</div>
         </div>
       </div>
-      <div className="bg-[#FCA120] flex justify-between h-[64px] rounded-lg p-6">
-        <div className="flex gap-6">
-          <div className="flex justify-center items-center gap-1 ">
-            Giá giảm dần <ChevronDownIcon className="size-4" />
-          </div>
-          <div className="flex justify-center items-center gap-1">
-            Kích thước <ChevronDownIcon className="size-4" />
-          </div>
-          <div className="flex justify-center items-center gap-1">
-            Giảm giá <ChevronDownIcon className="size-4" />
-          </div>
-          <div className="flex justify-center items-center gap-1">
-            Vườn <ChevronDownIcon className="size-4" />
+      <div className="flex gap-4">
+        <div className="w-[220px] border rounded-3xl h-fit">
+          <div className="text-xl text-[#FFFFFF] font-bold bg-[#FCA120] rounded-3xl px-4 py-2 mb-4">Danh mục</div>
+          <div className="text-[#000000] ">
+            {categories?.map((category) => (
+              <div
+                key={category.name}
+                onClick={() => onChangeCategory(category.name)}
+                className={`cursor-pointer pb-4 px-4 ${
+                  category.name === selectedCategory ? 'underline' : 'text-[#8A8A8A]'
+                }`}
+              >
+                {category.name}
+                {category.name !== categories[categories.length - 1].name && (
+                  <div className="h-[1px] bg-[#8A8A8A] w-full mt-4" />
+                )}
+              </div>
+            ))}
           </div>
         </div>
-        <div className="flex justify-center items-center gap-1">
-          Mới về <ChevronDownIcon className="size-4" />
+        <div>
+          <div className="bg-[#FCA120] flex justify-between h-[64px] rounded-lg p-6">
+            <div className="flex gap-6">
+              <div className="flex justify-center items-center gap-1 ">
+                Giá giảm dần <ChevronDownIcon className="size-4" />
+              </div>
+              <div className="flex justify-center items-center gap-1">
+                Kích thước <ChevronDownIcon className="size-4" />
+              </div>
+              <div className="flex justify-center items-center gap-1">
+                Giảm giá <ChevronDownIcon className="size-4" />
+              </div>
+              <div className="flex justify-center items-center gap-1">
+                Vườn <ChevronDownIcon className="size-4" />
+              </div>
+            </div>
+            <div className="flex justify-center items-center gap-1">
+              Mới về <ChevronDownIcon className="size-4" />
+            </div>
+          </div>
+          <div className="grid grid-cols-4 gap-8 py-4 px-2">
+            {products?.map((product, index) => (
+              <ProductCard id={index} category={selectedCategory} discount={10} react={true} {...product} />
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="grid grid-cols-5 gap-8 py-4 px-2">
-        {productItems.map((product) => (
-          <ProductCard {...product} />
-        ))}
       </div>
     </PageLayout>
   )

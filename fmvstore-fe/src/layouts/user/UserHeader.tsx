@@ -27,12 +27,13 @@ import ProductImage2 from '@/assets/product-items/image2.png'
 import { formatCurrency } from '@/helper'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/stores/user'
 import { useNavigate } from 'react-router-dom'
+import { cartAtom } from '@/stores/cart'
 
 const UserHeader = () => {
-  const cartItem = 2
+  // const cartItem = 2
   const productItems = [
     {
       id: 1,
@@ -61,6 +62,8 @@ const UserHeader = () => {
     navigate('/login')
   }
 
+  const cartItem = useAtomValue(cartAtom)
+
   return (
     <header className="flex flex-col items-center my-12">
       <div className="flex flex-wrap gap-10 justify-between items-center max-w-full w-[1280px]">
@@ -73,7 +76,7 @@ const UserHeader = () => {
               <div className="relative w-[28px] h-[28px] flex justify-center items-center cursor-pointer">
                 <ShoppingCartIcon className="w-[28px] absolute" />
                 <div className="absolute -top-2 -right-2 bg-zinc-700 text-[10px] text-white rounded-full w-[16px] h-[16px] flex justify-center items-center">
-                  {cartItem}
+                  {cartItem?.length ?? 0}
                 </div>
               </div>
             </SheetTrigger>
@@ -88,15 +91,19 @@ const UserHeader = () => {
                 </SheetTitle>
               </SheetHeader>
               <div className="grid gap-4 py-4">
-                {productItems.map((product) => (
+                {cartItem?.map((product) => (
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <img src={product.image} alt={product.name} className="h-[170px] mr-12 object-cover" />
+                        <img
+                          src={product.item?.imageUrl}
+                          alt={product.item?.name}
+                          className="h-[170px] mr-12 object-cover"
+                        />
                         <div className="flex flex-col">
-                          <div className="text-[#6B6565] text-[14px]">{product.category}</div>
-                          <div className="font-bold text-2xl">{product.name}</div>
-                          <div className="">Số lượng: {product.quantity}</div>
+                          <div className="text-[#6B6565] text-[14px]">{'Product Category'}</div>
+                          <div className="font-bold text-2xl">{product.item?.name}</div>
+                          <div className="">Số lượng: {product?.quantity}</div>
                         </div>
                       </div>
                       <div className="flex gap-12">
@@ -107,7 +114,7 @@ const UserHeader = () => {
                         </div>
                         <div className="flex flex-col">
                           <div className="text-[18px] font-semibold">
-                            {formatCurrency(product.price * product.quantity)}
+                            {formatCurrency(product.item?.price * product.quantity)}
                           </div>
                           <div className="flex items-center gap-2">
                             <TrashIcon className="w-4 h-4" />
