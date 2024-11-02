@@ -62,6 +62,10 @@ const UserHeader = () => {
     navigate('/login')
   }
 
+  const navigateToAccountPage = () => {
+    navigate('/account')
+  }
+
   const cartItem = useAtomValue(cartAtom)
 
   return (
@@ -156,11 +160,12 @@ const UserHeader = () => {
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={navigateToAccountPage}>
                   <UsersIcon className="mr-2 h-4 w-4" />
                   <span>Profile</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
+              <DropdownMenuLabel>Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>
                 <LogOutIcon className="w-4 h-4 mr-2 cursor-pointer" />

@@ -1,5 +1,11 @@
 export type User = {
+  id: string
   username: string
+  email: string
+  firstName: string
+  lastName: string
+  number: number
+  address: string
 }
 
 export type Category = {

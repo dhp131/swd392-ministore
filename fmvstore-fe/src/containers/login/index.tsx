@@ -13,6 +13,7 @@ import { authService } from '@/services/auth'
 import { Flip, toast } from 'react-toastify'
 import { useSetAtom } from 'jotai'
 import { userAtom } from '@/stores/user'
+import { userService } from '@/services/user'
 
 const formSchema = z.object({
   username: z.string().min(3).max(20),
@@ -36,10 +37,19 @@ const LoginContainer = () => {
     try {
       console.log(values)
       const res = await authService.login(values)
-      const token = res.result.token
+      const { token, uid } = res.result
       localStorage.setItem('access_token', token)
+      const userResponse = await userService.me(uid)
+      const user = userResponse.result
+      console.log('🚀 ~ onSubmit ~ user:', user)
       setUser({
-        username: values.username,
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        address: user.address,
+        number: user.number,
       })
       toast.success('Login successfully!', {
         position: 'top-center',
