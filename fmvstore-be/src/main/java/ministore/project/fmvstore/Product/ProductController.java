@@ -21,7 +21,7 @@ public class ProductController {
     final CloudinaryService cloudinaryService;
     private ProductService productService;
     @GetMapping
-    public List<Product> getAllProducts() {
+    public List<ProductResponse> getAllProducts() {
         return productService.getAllProducts();
     }
 
@@ -35,6 +35,26 @@ public class ProductController {
         productService.createProduct(request);
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .result("Product Create Successfully")
+                .build());
+    }
+    @GetMapping("/{id}")
+    public ProductResponse getProductById(@PathVariable String id) {
+        return productService.getProductById(id);
+    }
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> updateProduct(@PathVariable String id, @RequestBody ProductCreationRequest request) {
+        productService.updateProduct(id, request);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .result("Product Updated Successfully")
+                .build());
+    }
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponse<String>> deleteProduct(@PathVariable String id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .result("Product Deleted Successfully")
                 .build());
     }
 

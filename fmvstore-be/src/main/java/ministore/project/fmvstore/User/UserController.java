@@ -22,6 +22,12 @@ public class UserController {
                 .build());
 
     }
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(@PathVariable String userId) {
+        return ResponseEntity.ok(ApiResponse.<UserResponse>builder()
+                .result(userService.getUserById(userId))
+                .build());
+    }
 
     // Create new user
     @PostMapping
@@ -41,5 +47,16 @@ public class UserController {
                 .result("USER UPDATE SUCCESSFULLY")
                 .build());
     }
+    //Update User to Employee
+    @PreAuthorize("hasRole('MANAGER')")
+    @PostMapping("/{userId}/updateRole")
+    public ResponseEntity<ApiResponse<String>> updateUserRole(
+            @PathVariable String userId) {
+        userService.updateUserRole(userId);
+        return ResponseEntity.ok(ApiResponse.<String>builder()
+                .result("USER ROLE UPDATED SUCCESSFULLY")
+                .build());
+    }
+
 
 }

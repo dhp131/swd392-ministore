@@ -4,12 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import ministore.project.fmvstore.Role.RoleEntity;
 
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Data
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 
@@ -24,7 +23,7 @@ public class UserEntity {
     private int number;
     private String email;
     private String address;
-
     @ManyToMany
     private Set<RoleEntity> roles;
+    private double balance = 0;
 }
