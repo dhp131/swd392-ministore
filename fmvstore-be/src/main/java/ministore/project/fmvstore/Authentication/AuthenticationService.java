@@ -56,6 +56,7 @@ public class AuthenticationService {
 
         return AuthenticationResponse.builder()
                 .token(token)
+                .uid(user.getId())
                 .build();
     }
     private String generateToken(UserEntity user) {
