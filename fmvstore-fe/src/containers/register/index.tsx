@@ -5,9 +5,72 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Link, useNavigate } from 'react-router-dom'
+import { z } from 'zod'
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { authService } from '@/services/auth'
+import { Flip, toast } from 'react-toastify'
+
+const formSchema = z
+  .object({
+    firstName: z.string().max(20),
+    lastName: z.string().max(20),
+    email: z.string().email(),
+    number: z.string().min(5).max(10),
+    username: z.string().max(20),
+    address: z.string().max(20),
+    password: z
+      .string()
+      .regex(
+        /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/,
+        'Password must contain at least 8 characters, including one letter and one number'
+      ),
+    confirmPassword: z.string().min(1).max(20),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords must match',
+    path: ['confirmPassword'],
+  })
 
 const RegisterContainer = () => {
   const navigate = useNavigate()
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      number: '',
+      username: '',
+      address: '',
+      password: '',
+      confirmPassword: '',
+    },
+  })
+
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      await authService.register(values)
+      toast.success('Login successfully!', {
+        position: 'top-center',
+        closeOnClick: true,
+        theme: 'light',
+        transition: Flip,
+        hideProgressBar: true,
+      })
+      navigate('/login')
+    } catch (error: any) {
+      console.error('error.response')
+      toast.error(error.response.data.message ?? 'Login failed!', {
+        position: 'top-center',
+        closeOnClick: true,
+        theme: 'light',
+        transition: Flip,
+        hideProgressBar: true,
+      })
+    }
+  }
   return (
     <div className="w-full h-[100vh] bg-[#fff] flex justify-center items-center py-auto">
       <div className="w-[1400px] rounded-tl-none rounded-tr-[30px] rounded-br-[30px] rounded-bl-none border-solid border border-[#dbdbdb] relative flex">
@@ -18,8 +81,8 @@ const RegisterContainer = () => {
           <div>
             <div className="flex items-center shrink-0 flex-nowrap h-[64px] text-[64px] leading-[64px] whitespace-nowrap font-normal">
               <span className="font-['Volkhov'] text-[#389c5a]">F</span>
-              <span className="font-['Volkhov'] text-[#fca120]">B</span>
-              <span className="font-['Volkhov'] text-[#399c5a]">T</span>
+              <span className="font-['Volkhov'] text-[#fca120]">M</span>
+              <span className="font-['Volkhov'] text-[#399c5a]">V</span>
             </div>
             <span className="h-[16px] text-[16px]whitespace-nowrap">Food, Beverages & Treats</span>
           </div>
@@ -45,48 +108,155 @@ const RegisterContainer = () => {
               <div className="w-[30px] h-[5px] bg-[#828282]" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <Input
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                placeholder="First Name"
-              />
-              <Input
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                placeholder="Last Name"
-              />
-              <Input
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                type="email"
-                placeholder="Email Address"
-              />
-              <Input
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                placeholder="Phone Number"
-              />
-              <PasswordInput
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                placeholder="Password"
-              />
-              <PasswordInput
-                className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
-                placeholder="Confirm Password"
-              />
-            </div>
-            <div className="flex flex-col w-full">
-              <Button variant={'default'} className="h-[52px]">
-                Create Account
-              </Button>
-              <div className="w-full flex justify-center items-center">
-                <span className="text-[16px]">Already have an account?</span>
-                <Button
-                  variant={'link'}
-                  className="h-[52px] w-fit text-[#5b86e5] px-2"
-                  onClick={() => navigate('/login')}
-                >
-                  Login
-                </Button>
-              </div>
-            </div>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="firstName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="First Name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="lastName"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="Last Name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="Email Address"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="number"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="Phone Number"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="username"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="Username"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="address"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="Address"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <PasswordInput
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="Password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="confirmPassword"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <PasswordInput
+                            className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
+                            placeholder="Confirm Password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="flex flex-col w-full">
+                  <Button type="submit" variant={'default'} className="h-[52px]">
+                    Create Account
+                  </Button>
+                  <div className="w-full flex justify-center items-center">
+                    <span className="text-[16px]">Already have an account?</span>
+                    <Button
+                      variant={'link'}
+                      className="h-[52px] w-fit text-[#5b86e5] px-2"
+                      onClick={() => navigate('/login')}
+                    >
+                      Login
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            </Form>
           </div>
 
           <div className="w-full flex justify-end">
