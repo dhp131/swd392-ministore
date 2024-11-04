@@ -5,7 +5,6 @@ import {
   MagnifyingGlassIcon,
   UserIcon,
   UsersIcon,
-  CreditCardIcon,
   PlusIcon,
   MinusIcon,
   TrashIcon,
@@ -20,10 +19,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { LogOutIcon } from 'lucide-react'
+import { ListOrderedIcon, LogOutIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import ProductImage1 from '@/assets/product-items/image1.png'
-import ProductImage2 from '@/assets/product-items/image2.png'
 import { formatCurrency } from '@/helper'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
@@ -82,7 +79,10 @@ const UserHeader = () => {
                   <Button
                     className="w-[240px] bg-[#FFD470] text-[#000000]"
                     variant={'custom'}
-                    onClick={() => navigate('/checkout')}
+                    onClick={() => {
+                      setIsCartOpen(false)
+                      navigate('/checkout')
+                    }}
                   >
                     Thanh toán
                   </Button>
@@ -159,19 +159,23 @@ const UserHeader = () => {
               <UserIcon className="w-[28px] cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
                 <DropdownMenuItem onClick={navigateToAccountPage}>
                   <UsersIcon className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                  <span>Thông tin cá nhân</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={navigateToAccountPage}>
+                  <ListOrderedIcon className="mr-2 h-4 w-4" />
+                  <span>Lịch sử mua hàng</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>Hoạt động</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>
                 <LogOutIcon className="w-4 h-4 mr-2 cursor-pointer" />
-                <span>Log out</span>
+                <span>Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

@@ -1,6 +1,7 @@
 import ErrorPage from '@/error-page'
 import RootLayout from '@/layouts'
 import AccountPage from '@/pages/account'
+import CheckoutPage from '@/pages/checkout'
 import ForgotPasswordPage from '@/pages/forgot-password'
 import HomePage from '@/pages/home'
 import LoginPage from '@/pages/login'
@@ -42,6 +43,10 @@ const router = createBrowserRouter([
       {
         path: '/account',
         element: <AccountPage />,
+      },
+      {
+        path: '/checkout',
+        element: <CheckoutPage />,
       },
     ],
   },
