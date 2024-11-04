@@ -2,14 +2,22 @@ import { Ratings } from '@/components/ui/rating'
 import { formatCurrency } from '@/helper'
 import { Product } from '@/types'
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 type ProductProps = {
   product: Product
 }
 
 const ProductCard: React.FC<ProductProps> = ({ product }) => {
+  const navigate = useNavigate()
+  const navigateToProductDetail = () => {
+    navigate(`/products/${product.id}`)
+  }
   return (
-    <div className="flex flex-col font-medium max-w-[336px] text-zinc-700 bg-[#FFFFFF] rounded-[10px] py-6 px-8">
+    <div
+      className="flex flex-col font-medium max-w-[336px] text-zinc-700 bg-[#FFFFFF] rounded-[10px] py-6 px-8 cursor-pointer"
+      onClick={navigateToProductDetail}
+    >
       <img
         loading="lazy"
         src={product.imageUrl}

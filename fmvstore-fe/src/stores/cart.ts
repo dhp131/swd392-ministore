@@ -9,25 +9,37 @@ type CartItem = {
 
 const cartAtom = atomWithStorage<CartItem[] | null>('cart', null)
 
-const addItemToCart = (product: Product) => {
+const updateItemCart = (product: Product, quantity: number) => {
   const store = getDefaultStore()
   const cart = store.get(cartAtom)
   let newCart: CartItem[]
 
   if (cart) {
-    const existingItemIndex = cart.findIndex((item) => item.item.name === product.name) //fix with id later
-    if (existingItemIndex !== -1) {
-      newCart = cart.map((item, index) =>
-        index === existingItemIndex ? { ...item, quantity: item.quantity + 1 } : item
+    const existingItem = cart.find((item) => item.item.id === product.id) //fix with id later
+    if (existingItem) {
+      newCart = cart.map((item) =>
+        item.item.id === product.id ? { ...item, quantity: existingItem.quantity + quantity } : item
       )
     } else {
-      newCart = [...cart, { item: product, quantity: 1 }]
+      newCart = [...cart, { item: product, quantity }]
+    }
+
+    if (quantity === 0) {
+      //remove item from cart
+      newCart = newCart.filter((item) => item.item.id !== product.id)
+    }
+
+    //check if quantity is 0, decrease quantity by 1 and check do not allow quantity to be less than 0
+    if (quantity === -1 && existingItem?.quantity! > 0) {
+      if (existingItem?.quantity! - 1 === 0) {
+        return newCart
+      }
     }
   } else {
-    newCart = [{ item: product, quantity: 1 }]
+    newCart = [{ item: product, quantity }]
   }
 
   store.set(cartAtom, newCart)
 }
 
-export { cartAtom, addItemToCart }
+export { cartAtom, updateItemCart }

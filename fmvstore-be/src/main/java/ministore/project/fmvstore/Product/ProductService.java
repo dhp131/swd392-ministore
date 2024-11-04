@@ -22,6 +22,7 @@ public class ProductService {
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll().stream()
                 .map(product -> ProductResponse.builder()
+                        .id(product.getId())
                         .name(product.getName())
                         .price(product.getPrice())
                         .imageUrl(product.getImageUrl())
@@ -45,6 +46,7 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.RESOURCE_NOT_FOUND));
         return ProductResponse.builder()
+                .id(product.getId())
                 .name(product.getName())
                 .price(product.getPrice())
                 .imageUrl(product.getImageUrl())

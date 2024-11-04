@@ -32,9 +32,9 @@ const NewProduct = () => {
   return (
     <div className="flex flex-col justify-center items-center gap-8 py-20 ">
       <div className="text-4xl">Sản phẩm mới</div>
-      <div className="text-[#8A8A8A]">
+      {/* <div className="text-[#8A8A8A]">
         Snack khoai tây vị kim chi Hàn Quốc o'star gói 63g giòn rụm thơm ngon với gia vị đậm đà hoàn hảo
-      </div>
+      </div> */}
       <div className="flex px-10 justify-between w-fit gap-12">
         {categories?.map((category) => (
           <Button
@@ -52,8 +52,8 @@ const NewProduct = () => {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-[60px]">
-        {products.map((product, index) => (
-          <ProductCard key={index} product={product} />
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} />
         ))}
       </div>
 

@@ -30,28 +30,11 @@ import { Input } from '@/components/ui/input'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { userAtom } from '@/stores/user'
 import { useNavigate } from 'react-router-dom'
-import { cartAtom } from '@/stores/cart'
+import { cartAtom, updateItemCart } from '@/stores/cart'
+import { useState } from 'react'
 
 const UserHeader = () => {
-  // const cartItem = 2
-  const productItems = [
-    {
-      id: 1,
-      name: 'Hành tây 500g',
-      price: 23000,
-      category: 'Rau tươi',
-      image: ProductImage1,
-      quantity: 5,
-    },
-    {
-      id: 2,
-      name: 'Tỏi củ túi',
-      price: 13000,
-      category: 'Rau tươi',
-      image: ProductImage2,
-      quantity: 4,
-    },
-  ]
+  const [isCartOpen, setIsCartOpen] = useState(false)
 
   const setUser = useSetAtom(userAtom)
   const navigate = useNavigate()
@@ -68,6 +51,11 @@ const UserHeader = () => {
 
   const cartItem = useAtomValue(cartAtom)
 
+  const handleCloseCart = () => {
+    setIsCartOpen(false)
+  }
+  const totalPrice = cartItem?.reduce((acc, item) => acc + item.item.price * item.quantity, 0) ?? 0
+
   return (
     <header className="flex flex-col items-center my-12">
       <div className="flex flex-wrap gap-10 justify-between items-center max-w-full w-[1280px]">
@@ -75,7 +63,7 @@ const UserHeader = () => {
         <Navigation />
         <div className="flex gap-8">
           <MagnifyingGlassIcon className="w-[28px] cursor-pointer" />
-          <Sheet>
+          <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
             <SheetTrigger>
               <div className="relative w-[28px] h-[28px] flex justify-center items-center cursor-pointer">
                 <ShoppingCartIcon className="w-[28px] absolute" />
@@ -84,12 +72,18 @@ const UserHeader = () => {
                 </div>
               </div>
             </SheetTrigger>
-            <SheetContent style={{ maxWidth: '60vw' }} className="p-12">
+            <SheetContent style={{ maxWidth: '60vw' }} className="p-12 overflow-scroll">
               <SheetHeader>
-                <SheetTitle className="flex justify-between">
+                <SheetTitle className="flex justify-between gap-4">
                   <div className="text-4xl">Cập nhật giỏ hàng</div>
-                  <Button className="w-[240px]">Tiếp tục mua sắm</Button>
-                  <Button className="w-[240px] bg-[#FFD470] text-[#000000]" variant={'custom'}>
+                  <Button className="w-[240px]" onClick={handleCloseCart}>
+                    Tiếp tục mua sắm
+                  </Button>
+                  <Button
+                    className="w-[240px] bg-[#FFD470] text-[#000000]"
+                    variant={'custom'}
+                    onClick={() => navigate('/checkout')}
+                  >
                     Thanh toán
                   </Button>
                 </SheetTitle>
@@ -112,18 +106,26 @@ const UserHeader = () => {
                       </div>
                       <div className="flex gap-12">
                         <div className="flex items-center gap-3">
-                          <MinusIcon className="w-4 h-4" />
+                          <Button onClick={() => updateItemCart(product.item, -1)} variant={'ghost'}>
+                            <MinusIcon className="w-4 h-4" />
+                          </Button>
                           {product.quantity}
-                          <PlusIcon className="w-4 h-4" />
+                          <Button onClick={() => updateItemCart(product.item, 1)} variant={'ghost'}>
+                            <PlusIcon className="w-4 h-4" />
+                          </Button>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center">
                           <div className="text-[18px] font-semibold">
                             {formatCurrency(product.item?.price * product.quantity)}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <Button
+                            onClick={() => updateItemCart(product.item, 0)}
+                            variant={'ghost'}
+                            className="flex items-center gap-2"
+                          >
                             <TrashIcon className="w-4 h-4" />
                             <div className="text-[#FF5252]">Remove</div>
-                          </div>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -138,16 +140,16 @@ const UserHeader = () => {
               </div>
               <Separator className="my-2 h-0.5" />
               <div className="flex justify-between">
-                <div>2 món hàng</div>
+                <div>{cartItem?.length} món hàng</div>
                 <div className="grid grid-cols-2 gap-x-12">
                   <div className="text-right">Subtotal</div>
-                  <div>{formatCurrency(167000)}</div>
+                  <div>{formatCurrency(totalPrice)}</div>
                   <div className="text-right">Shipping</div>
                   <div>{formatCurrency(0)}</div>
                   <div className="text-right">Discounts & Coupons</div>
                   <div>{formatCurrency(0)}</div>
                   <div className="text-right font-bold">Total</div>
-                  <div className="font-bold">{formatCurrency(167000)}</div>
+                  <div className="font-bold">{formatCurrency(totalPrice)}</div>
                 </div>
               </div>
             </SheetContent>

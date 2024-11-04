@@ -21,6 +21,7 @@ public class CategoryService {
                         .description(category.getDescription())
                         .products(category.getProducts().stream()
                                 .map(product -> ProductResponse.builder()
+                                        .id(product.getId())
                                         .name(product.getName())
                                         .price(product.getPrice())
                                         .imageUrl(product.getImageUrl())

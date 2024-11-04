@@ -39,7 +39,7 @@ const LoginContainer = () => {
       const res = await authService.login(values)
       const { token, uid } = res.result
       localStorage.setItem('access_token', token)
-      const userResponse = await userService.me(uid)
+      const userResponse = await userService.me(uid, token)
       const user = userResponse.result
       console.log('🚀 ~ onSubmit ~ user:', user)
       setUser({

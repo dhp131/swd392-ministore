@@ -4,26 +4,18 @@ import { formatCurrency } from '@/helper'
 import { Button } from '../ui/button'
 import { useNavigate } from 'react-router-dom'
 import { Product } from '@/types'
-import { addItemToCart } from '@/stores/cart'
-
-// type ProductCardProps = {
-//   id: number
-//   name: string
-//   price: number
-//   category: string
-//   image: string
-//   discount: number
-//   react: boolean
-// }
+import { updateItemCart } from '@/stores/cart'
+import { useToast } from '@/hooks/useToast'
 
 type ProductCardProps = Product & {
   id: number
   category: string
   discount: number
   react: boolean
+  status: number
 }
 
-const ProductCard = ({ id, name, price, category, imageUrl, discount, react }: ProductCardProps) => {
+const ProductCard = ({ id, name, price, category, imageUrl, discount, react, status }: ProductCardProps) => {
   const navigate = useNavigate()
   const navigateToProductDetail = () => {
     navigate(`/products/${id}`)
@@ -49,7 +41,8 @@ const ProductCard = ({ id, name, price, category, imageUrl, discount, react }: P
       <Button
         onClick={(event) => {
           event.stopPropagation()
-          addItemToCart({ name, price, imageUrl, status: 1 })
+          updateItemCart({ id, name, price, imageUrl, status }, 1)
+          useToast().success('Thêm vào giỏ hàng thành công!')
         }}
         variant={'custom'}
         className="bg-[#FCA120] text-[#FFFFFF] text-center w-full rounded-sm mt-2 !h-8 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
