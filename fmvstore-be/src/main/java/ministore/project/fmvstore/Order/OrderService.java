@@ -117,6 +117,7 @@ public class OrderService {
     public List<OrderResponse> getOrdersByUser(String userId) {
         return ordersRepository.findByUserId(userId).stream()
                 .map(order -> OrderResponse.builder()
+                        .orderId(order.getId())
                         .userId(order.getUser().getId())
                         .orderDate(order.getOrderDate())
                         .totalAmount(order.getTotalAmount())
@@ -125,6 +126,9 @@ public class OrderService {
                                 .map(orderDetail -> OrderDetailDTO.builder()
                                         .productId(orderDetail.getProduct().getId())
                                         .quantity(orderDetail.getQuantity())
+                                        .imageUrl(orderDetail.getProduct().getImageUrl())
+                                        .name(orderDetail.getProduct().getName())
+                                        .price(orderDetail.getProduct().getPrice())
                                         .build())
                                 .collect(Collectors.toList()))
                         .build())

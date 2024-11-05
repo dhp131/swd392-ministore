@@ -19,4 +19,9 @@ export const orderService = {
     console.log('🚀 ~ getOrders: ~ response:', response)
     return response.data
   },
+  rejectOrder: async (orderId: string) => {
+    const response = await axiosInstance.post(`/orders/reject?orderId=${orderId}`)
+    console.log('🚀 ~ rejectOrder: ~ response:', response)
+    return response.data
+  },
 }
