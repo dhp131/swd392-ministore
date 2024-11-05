@@ -68,7 +68,7 @@ public class OrderController {
                 .build());
     }
 
-    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE') or hasRole('USER')")
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE') or hasRole('CUSTOMER')")
     @PostMapping("/reject")
     public ResponseEntity<ApiResponse<String>> rejectOrder(@RequestParam String orderId) {
         orderService.rejectOrder(orderId);
@@ -82,6 +82,17 @@ public class OrderController {
     public ResponseEntity<ApiResponse<List<OrderResponse>>> getAllOrders() {
         return ResponseEntity.ok(ApiResponse.<List<OrderResponse>>builder()
                 .result(orderService.getAllOrders())
+                .build());
+    }
+    @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE') or hasRole('CUSTOMER')")
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<OrderResponse>>> getOrdersByUser() {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserEntity user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        return ResponseEntity.ok(ApiResponse.<List<OrderResponse>>builder()
+                .result(orderService.getOrdersByUser(user.getId()))
                 .build());
     }
 }
