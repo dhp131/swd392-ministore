@@ -27,7 +27,7 @@ public class PromotionController {
                 .build());
     }
 
-    @GetMapping("get_all_promotion")
+    @GetMapping("/get_all_promotion")
     @PreAuthorize("hasRole('MANAGER') or hasRole('EMPLOYEE')")
     public ResponseEntity<?> getAllPromotion(){
         List<Promotion> promotion =promotionService.getAllPromotion();

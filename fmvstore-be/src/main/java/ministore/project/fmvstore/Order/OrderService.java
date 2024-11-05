@@ -63,6 +63,8 @@ public class OrderService {
         }).collect(Collectors.toList());
 
         double totalAmount = orderDetails.stream().mapToDouble(OrderDetail::getTotal).sum();
+        if (totalAmount ==  0 )
+            throw new AppException(ErrorCode.EMPTY_ORDER);
 
         // Apply promotion if valid code is provided
         if (promotionCode != null && !promotionCode.isEmpty()) {
@@ -106,6 +108,9 @@ public class OrderService {
                         .status(order.getStatus())
                         .orderDetails(order.getOrderDetails().stream()
                                 .map(orderDetail -> OrderDetailDTO.builder()
+                                        .name(orderDetail.getProduct().getName()  )
+                                        .price(orderDetail.getProduct().getPrice())
+                                        .imageUrl(orderDetail.getProduct().getImageUrl())
                                         .productId(orderDetail.getProduct().getId())
                                         .quantity(orderDetail.getQuantity())
                                         .build())
@@ -122,6 +127,9 @@ public class OrderService {
                         .status(order.getStatus())
                         .orderDetails(order.getOrderDetails().stream()
                                 .map(orderDetail -> OrderDetailDTO.builder()
+                                        .name(orderDetail.getProduct().getName()  )
+                                        .price(orderDetail.getProduct().getPrice())
+                                        .imageUrl(orderDetail.getProduct().getImageUrl())
                                         .productId(orderDetail.getProduct().getId())
                                         .quantity(orderDetail.getQuantity())
                                         .build())

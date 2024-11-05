@@ -27,7 +27,7 @@ public class OrderController {
     private final CartService cartService;
 
     @PostMapping("/checkout")
-    public ResponseEntity<ApiResponse<String>> checkout(@RequestBody(required = false) String promotionCode) {
+    public ResponseEntity<ApiResponse<String>> checkout(@RequestBody(required = false) PromotionRequest  promotionCode) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
@@ -37,13 +37,14 @@ public class OrderController {
         // Convert CartItem to OrderDetailDTO
         List<OrderDetailDTO> orderDetails = cart.getCartItems().stream()
                 .map(cartItem -> OrderDetailDTO.builder()
-                        .productId(cartItem.getProduct().getId())
+
                         .quantity(cartItem.getQuantity())
                         .build())
                 .collect(Collectors.toList());
 
+
         // Create order and clear cart
-        orderService.createOrder(orderDetails, promotionCode);
+        orderService.createOrder(orderDetails, promotionCode.getPromotionCode());
         cartService.clearCart(user.getId());
 
         return ResponseEntity.ok(ApiResponse.<String>builder()
@@ -53,7 +54,7 @@ public class OrderController {
 
     @PostMapping("/create")
     public ResponseEntity<ApiResponse<String>> createOrder(@RequestBody CreateOrderRequest request) {
-        orderService.createOrder(request.getOrderDetailDTOs(), request.getPromotionCode()); // Pass promotion code
+        orderService.createOrder(request.getOrderDetailDTOs(), request.getPromotionCode());
         return ResponseEntity.ok(ApiResponse.<String>builder()
                 .result("Order Created Successfully")
                 .build());

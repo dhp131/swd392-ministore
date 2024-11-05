@@ -27,6 +27,7 @@ public enum ErrorCode {
     PROMOTION_EXPIRED(10019, "Promotion expired", HttpStatus.BAD_REQUEST),
     ROLE_NOT_EXISTED(10020, "Role not existed", HttpStatus.BAD_REQUEST),
     PRODUCT_NOT_FOUND(10021, "Product not found", HttpStatus.NOT_FOUND),
+    EMPTY_ORDER(10022, "Empty order", HttpStatus.BAD_REQUEST),
     ;
 
     ErrorCode(int code, String message, HttpStatusCode statusCode) {
