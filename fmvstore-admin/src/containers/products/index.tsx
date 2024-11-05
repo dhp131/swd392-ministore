@@ -3,7 +3,6 @@ import PageTitle from '@/components/shared/PageTitle'
 import ProductActions from './ProductActions'
 import { parseAsString, useQueryStates } from 'nuqs'
 import { useFetch } from '@/hooks/useFetch'
-import { AdminProductsService, CategoriesService } from '@/client'
 import { Loader2, ShieldAlert } from 'lucide-react'
 import {
   Select,
@@ -23,6 +22,7 @@ import { useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import ProductsTable from './products-table/Table'
 import { toast } from '@/components/ui/use-toast'
+import { productService } from '@/services/product'
 
 export default function ProductsList() {
   const productsPage = useSearchParams().get('page')
@@ -41,61 +41,31 @@ export default function ProductsList() {
 
   const perPage = 10
 
-  const {
-    data: categories,
-    loading: categoriesLoading,
-    error: categoriesError,
-  } = useFetch(() =>
-    CategoriesService.categoriesControllerGetAllSubCategories({
-      category: productQueries.category,
-    }),
-  )
-
-  const {
-    data: mainCategories,
-    loading: mainCategoriesLoading,
-    error: mainCategoriesError,
-  } = useFetch(() =>
-    CategoriesService.categoriesControllerGetAllCategories({
-      category: '',
-    }),
-  )
-
-  const { run: deleteProduct } = useFetch(
-    AdminProductsService.productsAdminControllerDeleteProduct,
-    {
-      manual: true,
-      onSuccess: () => {
-        refresh()
-        toast({
-          variant: 'success',
-          title: 'Product deleted successfully',
-        })
-      },
-      onError: (err) => {
-        toast({
-          variant: 'destructive',
-          title: 'Failed to delete product',
-          description: err.message,
-        })
-      },
+  const { run: deleteProduct } = useFetch(productService.deleteProduct, {
+    manual: true,
+    onSuccess: () => {
+      refresh()
+      toast({
+        variant: 'success',
+        title: 'Product deleted successfully',
+      })
     },
-  )
+    onError: (err) => {
+      toast({
+        variant: 'destructive',
+        title: 'Failed to delete product',
+        description: err.message,
+      })
+    },
+  })
 
   const {
     data: products,
     loading,
     error,
     refresh,
-  } = useFetch(() =>
-    AdminProductsService.productsAdminControllerListAllProductsAdmin({
-      page,
-      pageSize: perPage,
-      category: productQueries.category,
-      subCategory: productQueries.subCategory,
-      keyword: productQueries.name,
-    }),
-  )
+  } = useFetch(() => productService.getAllProducts())
+  console.log('🚀 ~ ProductsList ~ products:', products)
 
   const renderTableException = () => {
     if (loading) return <TableSkeleton perPage={10} columns={skeletonColumns} />
@@ -137,28 +107,6 @@ export default function ProductsList() {
             <SelectTrigger className="md:basis-1/5">
               <SelectValue placeholder="Main Category" />
             </SelectTrigger>
-
-            <SelectContent>
-              {mainCategoriesLoading ? (
-                <div className="flex flex-col gap-2 items-center px-2 py-6">
-                  <Loader2 className="size-4 animate-spin" />
-                  <Typography>Loading...</Typography>
-                </div>
-              ) : mainCategoriesError || !categories ? (
-                <div className="flex flex-col gap-2 items-center px-2 py-6 max-w-full">
-                  <ShieldAlert className="size-6" />
-                  <Typography>
-                    Sorry, something went wrong while fetching categories
-                  </Typography>
-                </div>
-              ) : (
-                mainCategories?.items.map((category) => (
-                  <SelectItem key={category.name} value={category.name}>
-                    {category.name}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
           </Select>
 
           <Select
@@ -168,28 +116,6 @@ export default function ProductsList() {
             <SelectTrigger className="md:basis-1/5">
               <SelectValue placeholder="Category" />
             </SelectTrigger>
-
-            <SelectContent>
-              {categoriesLoading ? (
-                <div className="flex flex-col gap-2 items-center px-2 py-6">
-                  <Loader2 className="size-4 animate-spin" />
-                  <Typography>Loading...</Typography>
-                </div>
-              ) : categoriesError || !categories ? (
-                <div className="flex flex-col gap-2 items-center px-2 py-6 max-w-full">
-                  <ShieldAlert className="size-6" />
-                  <Typography>
-                    Sorry, something went wrong while fetching categories
-                  </Typography>
-                </div>
-              ) : (
-                categories.items.map((category) => (
-                  <SelectItem key={category.name} value={category.name}>
-                    {category.name}
-                  </SelectItem>
-                ))
-              )}
-            </SelectContent>
           </Select>
 
           {/* <Select>
@@ -239,7 +165,7 @@ export default function ProductsList() {
 
       {renderTableException()}
 
-      <ProductsTable data={products?.items!} deleteProduct={deleteProduct} />
+      <ProductsTable data={products} deleteProduct={deleteProduct} />
     </section>
   )
 }

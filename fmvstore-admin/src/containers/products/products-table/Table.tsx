@@ -43,8 +43,8 @@ import ProductItemRow from './ProductItemRow'
 import { getImageUrlFromS3Key } from '@/helpers/getImageUrl'
 
 type ProductsTableProps = {
-  data: ProductIndexAdminEntity[]
-  deleteProduct: (data: { id: number }) => void
+  data: any[]
+  deleteProduct: (id: string) => void
 }
 
 export default function ProductsTable({
@@ -56,13 +56,11 @@ export default function ProductsTable({
       <TableHeader>
         <TableRow>
           <TableHead>Id</TableHead>
+          <TableHead>Image</TableHead>
           <TableHead>Product Name</TableHead>
-          <TableHead>Color</TableHead>
-          <TableHead>Size</TableHead>
           <TableHead>Category</TableHead>
           <TableHead>Price</TableHead>
-          <TableHead>Sale Price</TableHead>
-          <TableHead>Stock</TableHead>
+          <TableHead>Quantity</TableHead>
           <TableHead>Status</TableHead>
           <TableHead>Actions</TableHead>
         </TableRow>
@@ -75,34 +73,42 @@ export default function ProductsTable({
                 <TableRow className="!appearance-none cursor-pointer hover:bg-gray-100 transition-colors duration-200 ease-in-out">
                   <TableCell>{product.id}</TableCell>
                   <TableCell className="font-medium">
+                    <Image
+                      src={product.imageUrl}
+                      alt={product.imageUrl}
+                      width={32}
+                      height={32}
+                      className="size-8 rounded-full"
+                    />
+                  </TableCell>
+                  <TableCell>
                     <div className="flex gap-2 items-center">
-                      <Image
-                        src={getImageUrlFromS3Key(product.defaultImage)}
-                        alt={product.defaultImage}
-                        width={32}
-                        height={32}
-                        className="size-8 rounded-full"
-                      />
-
                       <Typography className="capitalize block truncate">
                         {product.name}
                       </Typography>
                     </div>
                   </TableCell>
-                  <TableCell>-</TableCell>
-                  <TableCell>-</TableCell>
                   <TableCell>{product.category}</TableCell>
-                  <TableCell>-</TableCell>
-                  <TableCell>-</TableCell>
+                  <TableCell>{product.price}</TableCell>
                   <TableCell>-</TableCell>
                   <TableCell>
-                    <Badge
-                      variant={ProductBadgeVariants['selling']}
-                      className="flex-shrink-0 text-xs"
-                    >
-                      Selling
-                    </Badge>
+                    {product.status == 1 ? (
+                      <Badge
+                        variant={ProductBadgeVariants['selling']}
+                        className="flex-shrink-0 text-xs"
+                      >
+                        Selling
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant={ProductBadgeVariants['out-of-stock']}
+                        className="flex-shrink-0 text-xs"
+                      >
+                        Out of Stock
+                      </Badge>
+                    )}
                   </TableCell>
+                  <TableCell></TableCell>
                   <TableCell className="flex items-center gap-1">
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -152,7 +158,7 @@ export default function ProductsTable({
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancel</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => deleteProduct({ id: product.id })}
+                            onClick={() => deleteProduct(product.id)}
                           >
                             Continue
                           </AlertDialogAction>
