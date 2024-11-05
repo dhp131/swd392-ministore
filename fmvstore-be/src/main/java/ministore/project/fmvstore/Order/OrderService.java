@@ -113,6 +113,22 @@ public class OrderService {
                         .build())
                 .collect(Collectors.toList());
     }
+    public List<OrderResponse> getOrdersByUser(String userId) {
+        return ordersRepository.findByUserId(userId).stream()
+                .map(order -> OrderResponse.builder()
+                        .userId(order.getUser().getId())
+                        .orderDate(order.getOrderDate())
+                        .totalAmount(order.getTotalAmount())
+                        .status(order.getStatus())
+                        .orderDetails(order.getOrderDetails().stream()
+                                .map(orderDetail -> OrderDetailDTO.builder()
+                                        .productId(orderDetail.getProduct().getId())
+                                        .quantity(orderDetail.getQuantity())
+                                        .build())
+                                .collect(Collectors.toList()))
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
 
 
