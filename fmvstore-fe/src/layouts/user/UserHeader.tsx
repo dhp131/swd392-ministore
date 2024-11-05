@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { ListOrderedIcon, LogOutIcon } from 'lucide-react'
+import { ListOrderedIcon, LogOutIcon, PyramidIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatCurrency } from '@/helper'
 import { Separator } from '@/components/ui/separator'
@@ -44,6 +44,14 @@ const UserHeader = () => {
 
   const navigateToAccountPage = () => {
     navigate('/account')
+  }
+
+  const navigateToOrderPage = () => {
+    navigate('/order')
+  }
+
+  const navigateToPaymentPage = () => {
+    navigate('/payment')
   }
 
   const cartItem = useAtomValue(cartAtom)
@@ -166,9 +174,13 @@ const UserHeader = () => {
                   <UsersIcon className="mr-2 h-4 w-4" />
                   <span>Thông tin cá nhân</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem onClick={navigateToAccountPage}>
+                <DropdownMenuItem onClick={navigateToOrderPage}>
                   <ListOrderedIcon className="mr-2 h-4 w-4" />
                   <span>Lịch sử mua hàng</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={navigateToPaymentPage}>
+                  <PyramidIcon className="mr-2 h-4 w-4" />
+                  <span>Nạp tiền</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
               <DropdownMenuLabel>Hoạt động</DropdownMenuLabel>

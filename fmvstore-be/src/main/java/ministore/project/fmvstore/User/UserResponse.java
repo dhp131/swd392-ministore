@@ -19,6 +19,7 @@ public class UserResponse {
     String email;
     int number;
     String address;
+    double balance;
     private Set<String> roles;
 
 }

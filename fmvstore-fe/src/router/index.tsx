@@ -5,6 +5,8 @@ import CheckoutPage from '@/pages/checkout'
 import ForgotPasswordPage from '@/pages/forgot-password'
 import HomePage from '@/pages/home'
 import LoginPage from '@/pages/login'
+import OrderPage from '@/pages/order'
+import PaymentPage from '@/pages/payment'
 import ProductsPage from '@/pages/products'
 import ProductDetailPage from '@/pages/products/detail'
 import RegisterPage from '@/pages/register'
@@ -43,6 +45,14 @@ const router = createBrowserRouter([
       {
         path: '/account',
         element: <AccountPage />,
+      },
+      {
+        path: '/order',
+        element: <OrderPage />,
+      },
+      {
+        path: '/payment',
+        element: <PaymentPage />,
       },
       {
         path: '/checkout',

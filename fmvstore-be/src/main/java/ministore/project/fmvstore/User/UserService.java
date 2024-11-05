@@ -88,6 +88,7 @@ public class UserService {
         userResponse.setEmail(userEntity.getEmail());
         userResponse.setNumber(userEntity.getNumber());
         userResponse.setAddress(userEntity.getAddress());
+        userResponse.setBalance(userEntity.getBalance());
         userResponse.setRoles(userEntity.getRoles().stream()
                 .map(RoleEntity::getName)
                 .collect(Collectors.toSet()));

@@ -2,11 +2,7 @@ import PageLayout from '@/components/common/PageLayout'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
-import React from 'react'
+import React, { useState } from 'react'
 import { cartAtom, updateItemCart } from '@/stores/cart'
 import { formatCurrency } from '@/helper'
 import { useAtom } from 'jotai'
@@ -16,6 +12,7 @@ import { useMutation } from '@tanstack/react-query'
 import { useToast } from '@/hooks/useToast'
 import { orderService } from '@/services/order'
 import { useNavigate } from 'react-router-dom'
+import { Input } from '@/components/ui/input'
 
 const CheckoutPageContainer = () => {
   const [cartItem, setCartItem] = useAtom(cartAtom)
@@ -23,6 +20,8 @@ const CheckoutPageContainer = () => {
   const totalPrice = cartItem?.reduce((acc, item) => acc + item.item.price * item.quantity, 0) ?? 0
 
   const navigate = useNavigate()
+
+  const [promotion, setPromotion] = useState('')
 
   const { mutate: addItemToCart } = useMutation({
     mutationFn: () => cartService.addProductToCart(),
@@ -38,7 +37,7 @@ const CheckoutPageContainer = () => {
   })
 
   const { mutate: checkout } = useMutation({
-    mutationFn: () => orderService.checkout(),
+    mutationFn: (promotionCode: string) => orderService.checkout(promotionCode),
     onSuccess: () => {
       // handle success
       console.log('checkout successfully')
@@ -56,7 +55,7 @@ const CheckoutPageContainer = () => {
   const handleCheckout = () => {
     console.log('Checkout')
     addItemToCart()
-    checkout()
+    checkout(promotion)
   }
 
   return (
@@ -130,36 +129,10 @@ const CheckoutPageContainer = () => {
             </Card>
             <Card>
               <CardHeader>
-                <CardTitle>Vận chuyển &amp; Thanh toán</CardTitle>
+                <CardTitle>Mã giảm giá</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Tên</Label>
-                    <Input id="name" placeholder="Thông Trần" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Số điện thoại</Label>
-                    <Input id="email" placeholder="..." />
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="address">Address</Label>
-                  <Textarea id="address" placeholder="Hà Nội" />
-                </div>
-                {/* <div className="space-y-2">
-                  <Label htmlFor="payment">Payment Method</Label>
-                  <Select>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select payment method" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="credit-card">Credit Card</SelectItem>
-                      <SelectItem value="paypal">PayPal</SelectItem>
-                      <SelectItem value="apple-pay">Apple Pay</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div> */}
+                <Input value={promotion} onChange={(e) => setPromotion(e.target.value)} placeholder="FALLSALE" />
               </CardContent>
               <CardFooter>
                 <Button className="w-full" onClick={handleCheckout}>

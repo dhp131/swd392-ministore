@@ -32,7 +32,8 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     // handle response un-authen error
-    if (error.response.status === 401) {
+    const currentPage = window.location.pathname
+    if (error.response.status === 401 && currentPage !== '/login') {
       console.log('401')
       //redirect to login page
       localStorage.removeItem('access_token')

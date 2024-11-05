@@ -1,9 +1,22 @@
 import { axiosInstance } from './axios'
 
 export const orderService = {
-  checkout: async () => {
-    const response = await axiosInstance.post('/orders/checkout')
+  checkout: async (promotionCode?: string) => {
+    let response: any
+    // if (promotionCode) {
+    //   response = await axiosInstance.post('/orders/checkout', {
+    //     promotionCode,
+    //   })
+    // } else {
+    //   response = await axiosInstance.post('/orders/checkout')
+    // }
+    response = await axiosInstance.post('/orders/checkout')
     console.log('🚀 ~ checkout: ~ response:', response)
+    return response.data
+  },
+  getOrders: async () => {
+    const response = await axiosInstance.get('/orders')
+    console.log('🚀 ~ getOrders: ~ response:', response)
     return response.data
   },
 }

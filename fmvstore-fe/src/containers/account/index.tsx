@@ -2,7 +2,7 @@ import PageLayout from '@/components/common/PageLayout'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useMutation } from '@tanstack/react-query'
@@ -95,6 +95,7 @@ const AccountPageContainer = () => {
                 name="firstName"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel className="text-xl">First Name</FormLabel>
                     <FormControl>
                       <Input
                         className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
@@ -111,6 +112,7 @@ const AccountPageContainer = () => {
                 name="lastName"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel className="text-xl">Last Name</FormLabel>
                     <FormControl>
                       <Input
                         className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
@@ -127,6 +129,7 @@ const AccountPageContainer = () => {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel className="text-xl">Email Address</FormLabel>
                     <FormControl>
                       <Input
                         className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
@@ -143,11 +146,11 @@ const AccountPageContainer = () => {
                 name="number"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel className="text-xl">Phone Number</FormLabel>
                     <FormControl>
                       <Input
                         className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
                         placeholder="Phone Number"
-                        type="number"
                         {...field}
                       />
                     </FormControl>
@@ -160,6 +163,7 @@ const AccountPageContainer = () => {
                 name="address"
                 render={({ field }) => (
                   <FormItem>
+                    <FormLabel className="text-xl">Address</FormLabel>
                     <FormControl>
                       <Input
                         className="border-[#DBDBDB] border-t-0 border-r-0 border-l-0 border-b-2 rounded-none focus-visible:ring-0 h-[52px] text-[16px] leading-[24px] font-normal"
