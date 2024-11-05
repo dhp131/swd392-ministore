@@ -125,18 +125,15 @@ export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
         <SheetTrigger asChild />
         <SheetContent className="w-full md:max-w-[600px]">
           <SheetHeader>
-            <SheetTitle>{current?.orderCode}</SheetTitle>
-            {/* <SheetDescription>
-              {"Order detail here"}
-            </SheetDescription> */}
+            <SheetTitle>Order ID:{current?.orderId}</SheetTitle>
+            <SheetTitle>Order Date:{current?.orderDate}</SheetTitle>
           </SheetHeader>
-          Product list
-          {/* <div className="flex flex-col items-center gap-4 py-4">
-            {current?.orderLines.map((item: any) => (
+          <div className="flex flex-col items-center gap-4 py-4">
+            {current?.orderDetails.map((item: any) => (
               <Card className="flex gap-4 w-full flex-wrap" key={item.id}>
                 <div className="border-solid border-[1px] border-[lightgray] rounded-[4px] overflow-hidden">
                   <Image
-                    src={getImageUrlFromS3Key(item.image)}
+                    src={item.imageUrl}
                     alt={`${item.name}'s image`}
                     width={100}
                     height={100}
@@ -167,7 +164,7 @@ export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
                 </div>
               </Card>
             ))}
-          </div> */}
+          </div>
         </SheetContent>
       </Sheet>
     </>
