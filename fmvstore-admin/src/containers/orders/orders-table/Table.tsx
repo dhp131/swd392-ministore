@@ -22,15 +22,11 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet'
 
-import {
-  OrderIndexEntity,
-  OrderLineIndexEntity,
-  OrderStatusEnum,
-} from '@/client'
 import { formatAmount } from '@/helpers/formatAmount'
 import {
   ORDER_METHODS,
   ORDER_STATUS_OPTIONS,
+  OrderStatusEnum,
   statusOrder,
 } from '@/constants/orders'
 import { format } from 'date-fns'
@@ -50,31 +46,29 @@ import Typography from '@/components/ui/typography'
 import { getImageUrlFromS3Key } from '@/helpers/getImageUrl'
 
 type OrdersTableProps = {
-  data?: OrderIndexEntity[]
-  onValueChange: (id: OrderIndexEntity['id'], status: OrderStatusEnum) => void
+  data?: any[]
+  onValueChange: any
 }
 
 export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
   const [isOpen, setIsOpen] = React.useState<boolean>(false)
-  const [current, setCurrent] = React.useState<OrderIndexEntity | undefined>()
+  const [current, setCurrent] = React.useState<any | undefined>()
   return (
     <>
       <Table>
         <TableHeader>
           <TableRow>
             <TableHead />
-            <TableHead>Order Code</TableHead>
-            <TableHead>User Name</TableHead>
+            <TableHead>User Id</TableHead>
             <TableHead>Order Date</TableHead>
             <TableHead>Total</TableHead>
-            <TableHead>Payment Method</TableHead>
             <TableHead>Status</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data?.map((order) => (
+          {data?.map((order: any) => (
             <TableRow
-              key={order.id}
+              key={order.orderDate}
               className="!appearance-none cursor-pointer hover:bg-gray-100 transition-colors duration-200 ease-in-out"
             >
               <TableCell width={'50px'}>
@@ -89,23 +83,18 @@ export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
                   Detail
                 </Button>
               </TableCell>
-              <TableCell>{order.orderCode}</TableCell>
-              <TableCell>{order.user}</TableCell>
+              <TableCell>{order.userId}</TableCell>
               <TableCell>{format(new Date(order.orderDate), 'PPP')}</TableCell>
-              <TableCell>{formatAmount(order.orderTotal)}</TableCell>
-              <TableCell>
-                {ORDER_METHODS.find((i) => i.value === order.paymentMethod)
-                  ?.label ?? 'Unknown'}
-              </TableCell>
+              <TableCell>{formatAmount(order.totalAmount)}</TableCell>
               <TableCell>
                 <Select
-                  value={order.orderStatus}
-                  onValueChange={(value) =>
-                    onValueChange(order.id, value as OrderStatusEnum)
-                  }
+                  value={order.status}
+                  onValueChange={(value) => {
+                    onValueChange(order.orderId, value as OrderStatusEnum)
+                  }}
                   disabled={
-                    statusOrder[order.orderStatus] >=
-                    statusOrder[OrderStatusEnum.CANCELLED]
+                    order.status === OrderStatusEnum.REJECTED ||
+                    order.status === OrderStatusEnum.SHIPPING
                   }
                 >
                   <SelectTrigger className="capitalize md:col-span-2">
@@ -113,17 +102,13 @@ export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
                   </SelectTrigger>
 
                   <SelectContent>
-                    {ORDER_STATUS_OPTIONS.filter(
-                      (item) =>
-                        statusOrder[item.value] >=
-                        statusOrder[order.orderStatus],
-                    ).map((method) => (
+                    {ORDER_STATUS_OPTIONS.map((method) => (
                       <SelectItem
                         value={method.value}
                         key={method.value}
                         className={cn('capitalize', {
                           'text-red-700':
-                            method.value === OrderStatusEnum.CANCELLED,
+                            method.value === OrderStatusEnum.REJECTED,
                         })}
                       >
                         {method.label}
@@ -146,7 +131,7 @@ export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
             </SheetDescription> */}
           </SheetHeader>
           <div className="flex flex-col items-center gap-4 py-4">
-            {current?.orderLines.map((item) => (
+            {current?.orderLines.map((item: any) => (
               <Card className="flex gap-4 w-full flex-wrap" key={item.id}>
                 <div className="border-solid border-[1px] border-[lightgray] rounded-[4px] overflow-hidden">
                   <Image

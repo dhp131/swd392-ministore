@@ -14,9 +14,19 @@ export const orderService = {
     console.log('🚀 ~ checkout: ~ response:', response)
     return response.data
   },
-  getOrders: async () => {
-    const response = await axiosInstance.get('/orders')
+  getAllOrders: async () => {
+    const response = await axiosInstance.get('/orders/all')
     console.log('🚀 ~ getOrders: ~ response:', response)
+    return response.data
+  },
+  acceptOrder: async (orderId: string) => {
+    const response = await axiosInstance.post(`/orders/accept?orderId=${orderId}`)
+    return response.data
+  },
+  rejectOrder: async (orderId: string) => {
+    const response = await axiosInstance.post(
+      `/orders/reject?orderId=${orderId}`,
+    )
     return response.data
   },
 }

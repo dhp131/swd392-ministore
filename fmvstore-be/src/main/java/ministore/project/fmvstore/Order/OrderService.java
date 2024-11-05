@@ -100,6 +100,7 @@ public class OrderService {
     public List<OrderResponse> getAllOrders() {
         return ordersRepository.findAll().stream()
                 .map(order -> OrderResponse.builder()
+                        .orderId(order.getId())
                         .userId(order.getUser().getId())
                         .orderDate(order.getOrderDate())
                         .totalAmount(order.getTotalAmount())

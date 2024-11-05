@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @Builder
 public class OrderResponse {
+    private String orderId;
     private String userId;
     private LocalDateTime orderDate;
     private String status;

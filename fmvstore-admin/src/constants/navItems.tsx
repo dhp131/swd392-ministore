@@ -19,12 +19,6 @@ export const navItems = [
     role: [RoleEnum.MANAGER, RoleEnum.EMPLOYEE],
   },
   {
-    title: 'Users',
-    url: '/users',
-    icon: <MdOutlinePerson />,
-    role: [RoleEnum.MANAGER],
-  },
-  {
     title: 'Products',
     url: '/products',
     icon: <MdOutlineShoppingCart />,

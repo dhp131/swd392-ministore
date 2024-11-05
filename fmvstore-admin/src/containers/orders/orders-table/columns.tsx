@@ -3,12 +3,11 @@ import Typography from '@/components/ui/typography'
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatAmount } from '@/helpers/formatAmount'
 import { SkeletonColumn } from '@/types/skeleton'
-import { OrderIndexEntity } from '@/client'
 import { ORDER_METHODS } from '@/constants/orders'
 
 const onChangeStatus = () => {}
 
-export const columns: ColumnDef<OrderIndexEntity>[] = [
+export const columns: ColumnDef<any>[] = [
   {
     header: 'Order Code',
     cell: ({ row }) => (
@@ -64,29 +63,27 @@ export const columns: ColumnDef<OrderIndexEntity>[] = [
 
 export const skeletonColumns: SkeletonColumn[] = [
   {
-    header:'Order Code',
-    cell: 
-        <Skeleton className="w-32 h-8" />,
-  },
-  {
-    header:'User Name',
+    header: 'Order Code',
     cell: <Skeleton className="w-32 h-8" />,
   },
   {
-    header:'Order Date',
+    header: 'User Name',
     cell: <Skeleton className="w-32 h-8" />,
   },
   {
-    header:'Total',
+    header: 'Order Date',
     cell: <Skeleton className="w-32 h-8" />,
   },
   {
-    header:'Payment Method',
+    header: 'Total',
+    cell: <Skeleton className="w-32 h-8" />,
+  },
+  {
+    header: 'Payment Method',
     cell: <Skeleton className="w-20 h-8" />,
   },
   {
-    header:'Status',
+    header: 'Status',
     cell: <Skeleton className="w-20 h-8" />,
   },
-  
 ]

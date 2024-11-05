@@ -14,7 +14,11 @@ import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
 
 import DatePicker from './DatePicker'
-import { ORDER_METHODS, ORDER_STATUS_OPTIONS } from '@/constants/orders'
+import {
+  ORDER_METHODS,
+  ORDER_STATUS_OPTIONS,
+  OrderStatusEnum,
+} from '@/constants/orders'
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import {
   parseAsArrayOf,
@@ -23,13 +27,7 @@ import {
   parseAsStringEnum,
   useQueryStates,
 } from 'nuqs'
-import {
-  $OpenApiTs,
-  OrderIndexEntity,
-  OrderStatusEnum,
-  OrdersService,
-  PaymentMethodEnum,
-} from '@/client'
+
 import { Controller, useForm } from 'react-hook-form'
 import {
   DropdownMenu,
@@ -44,90 +42,30 @@ import OrdersTable from './orders-table/Table'
 import { toast } from '@/components/ui/use-toast'
 import CustomPagination from '@/components/ui/custom-pagination'
 import { PaginationProps } from '@/types/pagination'
-type OrderFilterReq = $OpenApiTs['/v1/orders/admin']['get']['req']
+import { orderService } from '@/services/order'
+import { useFetch } from '@/hooks/useFetch'
+// type OrderFilterReq = $OpenApiTs['/v1/orders/admin']['get']['req']
 export default function Orders() {
   const PAGE_SIZE = 10
-  const methods = useForm<OrderFilterReq>({
+  const methods = useForm<any>({
     defaultValues: {
       user: '',
       keyword: '',
     },
   })
 
-  const { control, handleSubmit, getValues, watch, setValue } = methods
+  const { control, getValues, watch, setValue } = methods
   const toDate = watch('to')
   const fromDate = watch('from')
-  const [query, setQuery] = useQueryStates(
-    {
-      keyword: parseAsString,
-      user: parseAsString,
-      orderStatus: parseAsArrayOf(
-        parseAsStringEnum<OrderStatusEnum>(Object.values(OrderStatusEnum)),
-      ),
-      paymentMethod: parseAsStringEnum<PaymentMethodEnum>(
-        Object.values(PaymentMethodEnum),
-      ),
-      from: parseAsString,
-      to: parseAsString,
-      orderBys: parseAsArrayOf(parseAsString),
-      page: parseAsInteger.withDefault(1),
-    },
-    {
-      history: 'push',
-      shallow: false,
-      clearOnDefault: true,
-    },
-  )
-
-  useEffect(() => {
-    methods.reset({
-      keyword: query.keyword ?? '',
-      user: query.user ?? '',
-      orderStatus: query.orderStatus ?? undefined,
-      paymentMethod: query.paymentMethod ?? undefined,
-      from: query.from ?? undefined,
-      to: query.to ?? undefined,
-      orderBys: query.orderBys ?? undefined,
-      page: query.page ?? undefined,
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const {
     data: orders,
-    isLoading,
-    refetch,
-  } = useQuery({
-    queryKey: ['orders', query],
-    queryFn: async () => {
-      const res = await OrdersService.ordersControllerFilterOrders({
-        keyword: query.keyword ?? undefined,
-        user: query.user ?? undefined,
-        orderStatus: query.orderStatus ?? undefined,
-        paymentMethod: query.paymentMethod ?? undefined,
-        from: query.from ?? undefined,
-        to: query.to ?? undefined,
-        orderBys: query.orderBys ?? undefined,
-        page: query.page ?? undefined,
-        pageSize: PAGE_SIZE,
-      })
-      return res
-    },
-    placeholderData: keepPreviousData,
-  })
-  const onSubmit = (data: OrderFilterReq) => {
-    setQuery({
-      ...query,
-      keyword: data.keyword ? data.keyword : null,
-      user: data.user ? data.user : null,
-      orderStatus: (data.orderStatus as OrderStatusEnum[]) ?? null,
-      paymentMethod: (data.paymentMethod as PaymentMethodEnum) ?? null,
-      from: data.from ?? null,
-      to: data.to ?? null,
-      orderBys: data.orderBys ?? null,
-      page: 1,
-    })
-  }
+    loading,
+    error,
+    refresh,
+  } = useFetch(() => orderService.getAllOrders())
+  console.log('🚀 ~ Orders ~ orders:', orders)
+
   const statusFilterText = useMemo(() => {
     const valueList = getValues('orderStatus')
     if (!valueList?.length) return 'Choose Order Status'
@@ -140,47 +78,85 @@ export default function Orders() {
     } more`
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [watch('orderStatus')])
-  const onUpdateStatus = useCallback(
-    async (id: OrderIndexEntity['id'], status: OrderStatusEnum) => {
-      try {
-        await OrdersService.ordersControllerUpdateStatus({
-          id,
-          requestBody: {
-            orderStatus: status,
-          },
-        })
-        await refetch()
-      } catch (e) {
-        console.error(e)
-        toast({
-          title: 'Update Status Failed',
-          description: "Can't complete this job",
-          variant: 'destructive',
-        })
-      }
+
+  const { run: acceptOrder } = useFetch(orderService.acceptOrder, {
+    manual: true,
+    onSuccess: () => {
+      refresh()
+      toast({
+        title: 'Status updated',
+        variant: 'success',
+      })
     },
-    [refetch],
-  )
-  const pagination = useMemo((): PaginationProps => {
-    const total = orders?.total ?? 0
-    const page = query.page ?? 1
-    const pages = Math.ceil(total / PAGE_SIZE)
-    return {
-      current: page,
-      perPage: PAGE_SIZE,
-      items: total,
-      pages,
-      first: 1,
-      last: Math.ceil(total / PAGE_SIZE),
-      prev: page - 1 <= 0 ? null : page - 1,
-      next: page + 1 > pages ? null : page + 1,
-    }
-  }, [orders?.total, query.page])
+    onError: (error) => {
+      // if ((error as any).body.message === 'Category does not exist') {
+      //   toast({
+      //     title: 'Order does not exist',
+      //     variant: 'destructive',
+      //   })
+      // }
+      // if ((error as any).body.message === 'Category already exists') {
+      //   toast({
+      //     title: 'Category already exists',
+      //     variant: 'destructive',
+      //   })
+      // }
+      toast({
+        title: 'Failed',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  const { run: rejectOrder } = useFetch(orderService.rejectOrder, {
+    manual: true,
+    onSuccess: () => {
+      refresh()
+      toast({
+        title: 'Status updated',
+        variant: 'success',
+      })
+    },
+    onError: (error) => {
+      // if ((error as any).body.message === 'Category does not exist') {
+      //   toast({
+      //     title: 'Category does not exist',
+      //     variant: 'destructive',
+      //   })
+      // }
+      toast({
+        title: 'Failed',
+        variant: 'destructive',
+      })
+    },
+  })
+
+  // const onUpdateStatus = useCallback(
+  //   async (id: OrderIndexEntity['id'], status: OrderStatusEnum) => {
+  //     try {
+  //       await OrdersService.ordersControllerUpdateStatus({
+  //         id,
+  //         requestBody: {
+  //           orderStatus: status,
+  //         },
+  //       })
+  //       await refetch()
+  //     } catch (e) {
+  //       console.error(e)
+  //       toast({
+  //         title: 'Update Status Failed',
+  //         description: "Can't complete this job",
+  //         variant: 'destructive',
+  //       })
+  //     }
+  //   },
+  //   [refetch],
+  // )
   return (
     <section>
       <PageTitle>Orders</PageTitle>
       <Card className="mb-5">
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 md:grid-cols-8 gap-4 lg:gap-6">
             <Controller
               control={control}
@@ -234,7 +210,7 @@ export default function Orders() {
                         setValue(
                           'orderStatus',
                           getValues('orderStatus')?.filter(
-                            (val) => val != option.value,
+                            (val: any) => val != option.value,
                           ),
                         )
                     }}
@@ -336,16 +312,16 @@ export default function Orders() {
               </Button>
             </div>
           </div>
-        </form>
+        </div>
       </Card>
       <OrdersTable
-        data={orders?.items}
-        onValueChange={onUpdateStatus}
-      />
-      <CustomPagination
-        {...pagination}
-        onChange={(page) => {
-          setQuery({ ...query, page })
+        data={orders?.result}
+        onValueChange={(orderId: string, status: OrderStatusEnum) => {
+          if (status === OrderStatusEnum.SHIPPING) {
+            acceptOrder(orderId)
+          } else {
+            rejectOrder(orderId)
+          }
         }}
       />
     </section>

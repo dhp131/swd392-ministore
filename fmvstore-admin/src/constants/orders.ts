@@ -1,4 +1,10 @@
-import { OrderStatusEnum, PaymentMethodEnum } from '@/client'
+import { PaymentMethodEnum } from '@/client'
+
+export enum OrderStatusEnum {
+  PENDING = 'PENDING',
+  SHIPPING = 'SHIPPING',
+  REJECTED = 'REJECTED',
+}
 
 export const ORDER_STATUS_OPTIONS = [
   {
@@ -6,20 +12,12 @@ export const ORDER_STATUS_OPTIONS = [
     value: OrderStatusEnum.PENDING,
   },
   {
-    label: 'Processing',
-    value: OrderStatusEnum.PROCESSING,
+    label: 'Shipping',
+    value: OrderStatusEnum.SHIPPING,
   },
   {
-    label: 'Delivering',
-    value: OrderStatusEnum.SHIPPED,
-  },
-  {
-    label: 'Delivered',
-    value: OrderStatusEnum.DELIVERED,
-  },
-  {
-    label: 'Cancelled',
-    value: OrderStatusEnum.CANCELLED,
+    label: 'Rejected',
+    value: OrderStatusEnum.REJECTED,
   },
 ]
 
@@ -40,10 +38,8 @@ export const ORDER_METHODS = [
 
 export const statusOrder = {
   [OrderStatusEnum.PENDING]: 1,
-  [OrderStatusEnum.PROCESSING]: 2,
-  [OrderStatusEnum.SHIPPED]: 3,
-  [OrderStatusEnum.CANCELLED]: 4,
-  [OrderStatusEnum.DELIVERED]: 5,
+  [OrderStatusEnum.SHIPPING]: 2,
+  [OrderStatusEnum.REJECTED]: 3,
 }
 
 export const StatisticOptions = [
