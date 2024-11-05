@@ -1,20 +1,12 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package ministore.project.fmvstore.product;
+package ministore.project.fmvstore.Product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ministore.project.fmvstore.Category.Category;
 
-/**
- *
- * @author toni
- */
 @Entity
 @Data
 @NoArgsConstructor
@@ -22,11 +14,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Product {
     @Id
-    private int productId;
-    private String productName;
-    private int pluId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String Id;
+    private String name;
     private double price;
     private String imageUrl;
     private int status;
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 }

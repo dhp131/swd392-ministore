@@ -1,19 +1,29 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package ministore.project.fmvstore.orderdetail;
+package ministore.project.fmvstore.OrderDetail;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import lombok.*;
+import ministore.project.fmvstore.Order.Orders;
+import ministore.project.fmvstore.Product.Product;
 
-/**
- *
- * @author toni
- */
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class OrderDetail {
+    @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-    private int orderId;
-    private int productId;
+    @ManyToOne
+    @JoinColumn(name = "order_id", nullable = false)
+    private Orders order;
+
+    @ManyToOne
+    @JoinColumn(name = "product_id", nullable = false)
+    private Product product;
+
     private int quantity;
+    private double price;
+    private double total;
 }

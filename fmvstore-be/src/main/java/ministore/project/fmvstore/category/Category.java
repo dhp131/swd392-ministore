@@ -1,28 +1,27 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package ministore.project.fmvstore.category;
+package ministore.project.fmvstore.Category;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.AccessLevel;
+import java.util.List;
+import ministore.project.fmvstore.Product.Product;
 
-/**
- *
- * @author toni
- */
-@Entity
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@Entity
 public class Category {
     @Id
-    private int categoryId;
-    private String categoryName;
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    Integer id;
+    String name;
+    String description;
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+    List<Product> products;
 }
