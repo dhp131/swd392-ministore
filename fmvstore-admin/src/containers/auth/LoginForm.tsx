@@ -25,16 +25,17 @@ import { loginFields } from './fields'
 import { loginFormSchema } from './schemas'
 import loginImg from 'public/assets/login.jpg'
 import { useFetch } from '@/hooks/useFetch'
-import { AuthService, RoleEnum } from '@/client'
-import { COOKIE_KEY, setSessionCookie } from '@/client/request/cookie'
-import Cookies from 'js-cookie'
 import { authService } from '@/services/auth'
+import { userService } from '@/services/user'
+import { useSetAtom } from 'jotai'
+import { userAtom } from '@/stores/user'
 
 type FormData = z.infer<typeof loginFormSchema>
 
 export default function LoginForm() {
   const { toast } = useToast()
   const router = useRouter()
+  const setUser = useSetAtom(userAtom)
 
   const form = useForm<FormData>({
     resolver: zodResolver(loginFormSchema),
@@ -46,29 +47,30 @@ export default function LoginForm() {
 
   const { run: login, loading } = useFetch(authService.login, {
     manual: true,
-    onSuccess: (res) => {
-      console.log('🚀 ~ LoginForm ~ res:', res)
-      if (![RoleEnum.ADMIN, RoleEnum.SUB_ADMIN].includes(res.user.role as any))
-        return toast({
-          title: 'Login Failed',
-          description: 'You are not authorized to access this page',
-          variant: 'destructive',
-        })
+    onSuccess: async (res) => {
+      const { token, uid } = res.result
+      localStorage.setItem('access_token', token)
+      const userResponse = await userService.me(uid, token)
+      const user = userResponse.result
+      console.log('🚀 ~ onSubmit ~ user:', user)
+      setUser({
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        address: user.address,
+        number: user.number,
+        roles: user.roles,
+      })
       toast({
         title: 'Login Success',
         description:
           'You have successfully logged in. Redirecting to the dashboard...',
         variant: 'success',
       })
-      setSessionCookie({
-        user: res.user,
-        accessToken: res.accessToken,
-        refreshToken: res.refreshToken,
-      })
-      Cookies.set(COOKIE_KEY.IS_LOGIN, 'true', { expires: 30 })
       window.location.replace('/')
       form.reset()
-      router.push('/')
     },
     onError: (error) => {
       console.error(error)

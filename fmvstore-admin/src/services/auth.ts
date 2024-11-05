@@ -5,6 +5,12 @@ const login = async (data: { username: string; password: string }) => {
   return response.data
 }
 
+const register = async (data: any) => {
+  const response = await axiosInstance.post('/users', data)
+  return response.data
+}
+
 export const authService = {
   login,
+  register,
 }

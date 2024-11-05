@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { parseAsInteger, parseAsString, useQueryStates } from 'nuqs'
 import { useFetch } from '@/hooks/useFetch'
-import { CategoriesService, CategoryIndexEntity } from '@/client'
 import TableSkeleton from '@/components/shared/TableSkeleton'
 import { skeletonColumns } from './categories-table/columns'
 import TableError from '@/components/shared/TableError'
@@ -48,6 +47,7 @@ import { Label } from '@/components/ui/label'
 import { useState } from 'react'
 import { toast } from '@/components/ui/use-toast'
 import DataTable from '@/components/shared/DataTable'
+import { categoryService } from '@/services/category'
 
 export default function Categories() {
   const [categoryEditName, setCategoryEditName] = useState<string>('')
@@ -72,70 +72,58 @@ export default function Categories() {
     loading,
     error,
     refresh,
-  } = useFetch(() =>
-    CategoriesService.categoriesControllerGetAllCategories({
-      category: categoryQueries.keyword,
-    }),
-  )
+  } = useFetch(() => categoryService.getAllCategories())
 
-  const { run: updateCategory } = useFetch(
-    CategoriesService.categoriesControllerUpdateCategory,
-    {
-      onSuccess: () => {
-        refresh()
-        toast({
-          title: 'Category updated',
-          variant: 'success',
-        })
-        setSelectedCategory('')
-        setCategoryEditName('')
-      },
-      onError: (error) => {
-        if ((error as any).body.message === 'Category does not exist') {
-          toast({
-            title: 'Category does not exist',
-            variant: 'destructive',
-          })
-        }
-        if ((error as any).body.message === 'Category already exists') {
-          toast({
-            title: 'Category already exists',
-            variant: 'destructive',
-          })
-        }
-      },
+  const { run: updateCategory } = useFetch(categoryService.updateCategory, {
+    manual: true,
+    onSuccess: () => {
+      refresh()
+      toast({
+        title: 'Category updated',
+        variant: 'success',
+      })
+      setSelectedCategory('')
+      setCategoryEditName('')
     },
-  )
+    onError: (error) => {
+      if ((error as any).body.message === 'Category does not exist') {
+        toast({
+          title: 'Category does not exist',
+          variant: 'destructive',
+        })
+      }
+      if ((error as any).body.message === 'Category already exists') {
+        toast({
+          title: 'Category already exists',
+          variant: 'destructive',
+        })
+      }
+    },
+  })
 
-  const { run: deleteCategory } = useFetch(
-    CategoriesService.categoriesControllerDeleteCategory,
-    {
-      onSuccess: () => {
-        refresh()
-        toast({
-          title: 'Category deleted',
-          variant: 'success',
-        })
-      },
-      onError: (error) => {
-        if ((error as any).body.message === 'Category does not exist') {
-          toast({
-            title: 'Category does not exist',
-            variant: 'destructive',
-          })
-        }
-      },
+  const { run: deleteCategory } = useFetch(categoryService.deleteCategory, {
+    manual: true,
+    onSuccess: () => {
+      refresh()
+      toast({
+        title: 'Category deleted',
+        variant: 'success',
+      })
     },
-  )
+    onError: (error) => {
+      if ((error as any).body.message === 'Category does not exist') {
+        toast({
+          title: 'Category does not exist',
+          variant: 'destructive',
+        })
+      }
+    },
+  })
 
   const handleUpdateCategory = async () => {
-    updateCategory({
-      category: selectedCategory,
-      requestBody: {
-        name: categoryEditName,
-        parentId: 1,
-      },
-    })
+    console.log('update')
+
+    updateCategory(selectedCategory, categoryEditName)
   }
   const renderMetadata = () => {
     if (loading)
@@ -154,13 +142,11 @@ export default function Categories() {
     setCategoryEditName(e.target.value)
   }
 
-  const handleDelete = (category: string) => {
-    deleteCategory({
-      category,
-    })
+  const handleDelete = (categoryId: string) => {
+    deleteCategory(categoryId)
   }
 
-  const columns: ColumnDef<CategoryIndexEntity>[] = [
+  const columns: ColumnDef<any>[] = [
     {
       id: 'select',
       header: ({ table }) => (
@@ -200,8 +186,9 @@ export default function Categories() {
               <TooltipTrigger asChild>
                 <Button
                   onClick={() => {
+                    console.log('row.original', row.original)
                     setIsOpen(true)
-                    setSelectedCategory(row.original.name)
+                    setSelectedCategory(row.original.id)
                     setCategoryEditName(row.original.name)
                   }}
                   variant="ghost"
@@ -247,7 +234,7 @@ export default function Categories() {
                 <AlertDialogFooter>
                   <AlertDialogCancel>Cancel</AlertDialogCancel>
                   <AlertDialogAction
-                    onClick={() => handleDelete(row.original.name)}
+                    onClick={() => handleDelete(row.original.id)}
                   >
                     Continue
                   </AlertDialogAction>
@@ -261,7 +248,7 @@ export default function Categories() {
   ]
 
   const table = useReactTable({
-    data: categories?.items || [],
+    data: categories || [],
     columns,
     getCoreRowModel: getCoreRowModel(),
     onRowSelectionChange: setRowSelection,
@@ -275,7 +262,7 @@ export default function Categories() {
       <PageTitle>Categories</PageTitle>
 
       <CategoryActions refresh={refresh} />
-      <Card className="mb-5">
+      {/* <Card className="mb-5">
         <div className="flex flex-col md:flex-row gap-4 lg:gap-6">
           <Input
             type="search"
@@ -302,19 +289,19 @@ export default function Categories() {
             </Button>
           </div>
         </div>
-      </Card>
+      </Card> */}
       {renderMetadata()}
       <DataTable
         table={table}
         pagination={{
           current: categoryQueries.page,
-          pages: Math.ceil(categories?.total! / perPage),
+          pages: Math.ceil(categories?.length! / perPage),
           perPage,
-          items: categories?.total!,
+          items: categories?.length!,
           first: 1,
-          last: Math.ceil(categories?.total! / perPage),
+          last: Math.ceil(categories?.length! / perPage),
           next:
-            categoryQueries.page + 1 > Math.ceil(categories?.total! / perPage)
+            categoryQueries.page + 1 > Math.ceil(categories?.length! / perPage)
               ? null
               : categoryQueries.page + 1,
           prev: categoryQueries.page - 1,

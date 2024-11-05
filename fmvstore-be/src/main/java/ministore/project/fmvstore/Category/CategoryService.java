@@ -17,6 +17,7 @@ public class CategoryService {
     public List<CategoryResponse> getAllCategories() {
         return categoryRepository.findAll().stream()
                 .map(category -> CategoryResponse.builder()
+                        .id(category.getId())
                         .name(category.getName())
                         .description(category.getDescription())
                         .products(category.getProducts().stream()

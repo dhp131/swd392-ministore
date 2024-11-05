@@ -16,8 +16,8 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { useFetch } from '@/hooks/useFetch'
-import { CategoriesService } from '@/client'
 import { toast } from '@/components/ui/use-toast'
+import { categoryService } from '@/services/category'
 
 type CategoryActionsProps = {
   refresh: () => void
@@ -25,35 +25,28 @@ type CategoryActionsProps = {
 
 export default function CategoryActions({ refresh }: CategoryActionsProps) {
   const [categoryName, setCategoryName] = useState<string>()
-  const { run: createCategory } = useFetch(
-    CategoriesService.categoriesControllerCreateCategory,
-    {
-      onSuccess: () => {
-        refresh()
-        toast({
-          title: 'Category created',
-          variant: 'success',
-        })
-        setCategoryName('')
-      },
-      onError: (error) => {
-        if ((error as any).body.message === 'Category already exists') {
-          toast({
-            title: 'Category already exists',
-            variant: 'destructive',
-          })
-        }
-      },
+  const { run: createCategory } = useFetch(categoryService.createCategory, {
+    manual: true,
+    onSuccess: () => {
+      refresh()
+      toast({
+        title: 'Category created',
+        variant: 'success',
+      })
+      setCategoryName('')
     },
-  )
+    onError: (error) => {
+      if ((error as any).body.message === 'Category already exists') {
+        toast({
+          title: 'Category already exists',
+          variant: 'destructive',
+        })
+      }
+    },
+  })
 
   const handleCreateCategory = async () => {
-    createCategory({
-      requestBody: {
-        name: categoryName!,
-        parentId: undefined,
-      },
-    })
+    createCategory(categoryName ?? '')
   }
   return (
     <Card className="mb-5">

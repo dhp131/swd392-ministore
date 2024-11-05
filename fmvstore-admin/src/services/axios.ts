@@ -1,6 +1,10 @@
 import axios from 'axios'
 
-const accessToken = localStorage.getItem('access_token')
+let accessToken: string | null = null
+
+if (typeof window !== 'undefined') {
+  accessToken = localStorage.getItem('access_token')
+}
 const headers: any = {
   'Content-Type': 'application/json',
 }
@@ -22,7 +26,7 @@ axiosInstance.interceptors.request.use(
   (error) => {
     // handle request error
     return Promise.reject(error)
-  }
+  },
 )
 
 axiosInstance.interceptors.response.use(
@@ -32,7 +36,8 @@ axiosInstance.interceptors.response.use(
   },
   (error) => {
     // handle response un-authen error
-    if (error.response.status === 401) {
+    const currentPage = window.location.pathname
+    if (error.response.status === 401 && currentPage !== '/login') {
       console.log('401')
       //redirect to login page
       localStorage.removeItem('access_token')
@@ -40,5 +45,5 @@ axiosInstance.interceptors.response.use(
       window.location.href = '/login'
     }
     return Promise.reject(error)
-  }
+  },
 )

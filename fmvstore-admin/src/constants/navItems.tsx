@@ -9,47 +9,49 @@ import { RiCoupon2Line } from 'react-icons/ri'
 import { TbTag } from 'react-icons/tb'
 import { TbBriefcase, TbRuler, TbColorFilter } from 'react-icons/tb'
 import { MdOutlineShoppingCart } from 'react-icons/md'
-import { RoleEnum } from '@/client'
+import { RoleEnum } from './enum'
 
 export const navItems = [
   {
     title: 'Dashboard',
     url: '/',
     icon: <MdOutlineDashboard />,
+    role: [RoleEnum.MANAGER, RoleEnum.EMPLOYEE],
   },
   {
     title: 'Users',
     url: '/users',
     icon: <MdOutlinePerson />,
+    role: [RoleEnum.MANAGER],
   },
   {
     title: 'Products',
     url: '/products',
     icon: <MdOutlineShoppingCart />,
-    role: [RoleEnum.ADMIN, RoleEnum.SUB_ADMIN],
+    role: [RoleEnum.MANAGER, RoleEnum.EMPLOYEE],
   },
   {
     title: 'Categories',
     url: '/categories',
     icon: <TbTag />,
-    role: [RoleEnum.ADMIN, RoleEnum.SUB_ADMIN],
+    role: [RoleEnum.MANAGER, RoleEnum.EMPLOYEE],
   },
   {
     title: 'Orders',
     url: '/orders',
     icon: <TbTruckDelivery />,
-    role: [RoleEnum.ADMIN, RoleEnum.SUB_ADMIN],
+    role: [RoleEnum.MANAGER, RoleEnum.EMPLOYEE],
   },
   {
     title: 'Promotions',
     url: '/coupons',
     icon: <RiCoupon2Line />,
-    role: [RoleEnum.ADMIN],
+    role: [RoleEnum.MANAGER, RoleEnum.EMPLOYEE],
   },
   {
     title: 'Staff',
     url: '/staff',
     icon: <TbBriefcase />,
-    role: [RoleEnum.ADMIN],
+    role: [RoleEnum.MANAGER],
   },
 ]

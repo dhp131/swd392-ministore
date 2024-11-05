@@ -7,26 +7,28 @@ import { cn } from '@/lib/utils'
 import { Button, buttonVariants } from '@/components/ui/button'
 import Typography from '@/components/ui/typography'
 import { navItems } from '@/constants/navItems'
-import { getCurrentRole } from '@/client/request/cookie'
-import { RoleEnum } from '@/client'
 import { useEffect, useMemo, useState } from 'react'
+import { useAtomValue } from 'jotai'
+import { userAtom } from '@/stores/user'
+import { RoleEnum } from '@/constants/enum'
 
 export default function SidebarContent() {
   const pathname = usePathname()
-  const role = getCurrentRole() as RoleEnum
+  const user = useAtomValue(userAtom)
 
-  const [clientSideRole, setClientSideRole] = useState<RoleEnum | null>(null)
+  const [clientSideRole, setClientSideRole] = useState<RoleEnum[]>([])
 
   useEffect(() => {
-    setClientSideRole(role)
-  }, [role])
+    setClientSideRole(user?.roles!)
+  }, [user?.roles])
 
   const filteredNavItems = useMemo(() => {
-    if (clientSideRole === null) {
+    if (clientSideRole?.length === 0) {
       return []
     }
-
-    return navItems
+    return navItems.filter((navItem) =>
+      navItem.role.some((role) => clientSideRole?.includes(role)),
+    )
   }, [clientSideRole])
 
   if (clientSideRole === null) {
