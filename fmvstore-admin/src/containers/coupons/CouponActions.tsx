@@ -27,14 +27,13 @@ import {
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { useState } from 'react'
 import { useFetch } from '@/hooks/useFetch'
-import { DiscountTypeEnum, PromotionsService } from '@/client'
 import { toast } from '@/components/ui/use-toast'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { promotionFormSchema } from './schemas'
 import { z } from 'zod'
+import { promotionService } from '@/services/promotion'
 
 type PromotionActionsProps = {
   refresh: () => void
@@ -42,26 +41,12 @@ type PromotionActionsProps = {
 
 type FormData = z.infer<typeof promotionFormSchema>
 
-const discountTypeOptions = [
-  {
-    value: DiscountTypeEnum.PERCENTAGE,
-    label: DiscountTypeEnum.PERCENTAGE,
-  },
-  {
-    value: DiscountTypeEnum.AMOUNT,
-    label: DiscountTypeEnum.AMOUNT,
-  },
-]
-
 export default function CouponActions({ refresh }: PromotionActionsProps) {
   const form = useForm<FormData>({
     resolver: zodResolver(promotionFormSchema),
     defaultValues: {
-      name: '',
       code: '',
-      description: '',
-      discount: '0',
-      discountType: DiscountTypeEnum.PERCENTAGE,
+      discountPercentage: '0',
       startDate: new Date()
         .toLocaleDateString('en-GB')
         .split('/')
@@ -74,26 +59,24 @@ export default function CouponActions({ refresh }: PromotionActionsProps) {
         .join('-'),
     },
   })
-  const { run: createPromotion } = useFetch(
-    PromotionsService.promotionsControllerCreatePromotion,
-    {
-      onSuccess: () => {
-        refresh()
-        toast({
-          title: 'Promotion created',
-          variant: 'success',
-        })
-      },
-      onError: (error) => {
-        if ((error as any).body.message === 'Create promotion failed') {
-          toast({
-            title: 'Create promotion failed',
-            variant: 'destructive',
-          })
-        }
-      },
+  const { run: createPromotion } = useFetch(promotionService.create, {
+    manual: true,
+    onSuccess: () => {
+      refresh()
+      toast({
+        title: 'Promotion created',
+        variant: 'success',
+      })
     },
-  )
+    onError: (error) => {
+      if ((error as any).body.message === 'Create promotion failed') {
+        toast({
+          title: 'Create promotion failed',
+          variant: 'destructive',
+        })
+      }
+    },
+  })
 
   const {
     handleSubmit,
@@ -102,17 +85,12 @@ export default function CouponActions({ refresh }: PromotionActionsProps) {
 
   function onSubmit(values: z.infer<typeof promotionFormSchema>) {
     console.log('🚀 ~ onSubmit ~ values:', values)
-    createPromotion({
-      requestBody: {
-        name: values.name,
-        code: values.code,
-        description: values.description,
-        discount: Number(values.discount),
-        discountType: values.discountType,
-        startDate: new Date(values.startDate).toISOString(),
-        endDate: new Date(values.endDate).toISOString(),
-      },
-    })
+    createPromotion(
+      values.code,
+      +values.discountPercentage,
+      new Date(values.startDate).toISOString(),
+      new Date(values.endDate).toISOString(),
+    )
   }
 
   return (
@@ -144,23 +122,6 @@ export default function CouponActions({ refresh }: PromotionActionsProps) {
                     <div className="grid grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
-                        name="name"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Name</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="text"
-                                placeholder="Campain Name"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
                         name="code"
                         render={({ field }) => (
                           <FormItem>
@@ -177,67 +138,15 @@ export default function CouponActions({ refresh }: PromotionActionsProps) {
                         )}
                       />
                     </div>
-
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Input
-                              type="text"
-                              placeholder="Description"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     <div className="grid grid-cols-2 gap-4">
                       <FormField
                         control={form.control}
-                        name="discount"
+                        name="discountPercentage"
                         render={({ field }) => (
                           <FormItem>
                             <FormLabel>Discount</FormLabel>
                             <FormControl>
                               <Input type="number" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={form.control}
-                        name="discountType"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Discount Type</FormLabel>
-                            <FormControl>
-                              <Select
-                                onValueChange={(value: string) =>
-                                  field.onChange(value)
-                                }
-                                // defaultValue={DiscountTypeEnum.PERCENTAGE}
-                              >
-                                <SelectTrigger className="capitalize">
-                                  <SelectValue placeholder={field.value} />
-                                </SelectTrigger>
-
-                                <SelectContent>
-                                  {discountTypeOptions.map((type) => (
-                                    <SelectItem
-                                      value={type.value}
-                                      key={type.value}
-                                      className="capitalize"
-                                    >
-                                      {type.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectContent>
-                              </Select>
                             </FormControl>
                             <FormMessage />
                           </FormItem>
