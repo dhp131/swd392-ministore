@@ -130,7 +130,8 @@ export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
               {"Order detail here"}
             </SheetDescription> */}
           </SheetHeader>
-          <div className="flex flex-col items-center gap-4 py-4">
+          Product list
+          {/* <div className="flex flex-col items-center gap-4 py-4">
             {current?.orderLines.map((item: any) => (
               <Card className="flex gap-4 w-full flex-wrap" key={item.id}>
                 <div className="border-solid border-[1px] border-[lightgray] rounded-[4px] overflow-hidden">
@@ -166,7 +167,7 @@ export default function OrdersTable({ data, onValueChange }: OrdersTableProps) {
                 </div>
               </Card>
             ))}
-          </div>
+          </div> */}
         </SheetContent>
       </Sheet>
     </>
