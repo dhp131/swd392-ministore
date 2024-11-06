@@ -5,7 +5,6 @@ import {
   MagnifyingGlassIcon,
   UserIcon,
   UsersIcon,
-  CreditCardIcon,
   PlusIcon,
   MinusIcon,
   TrashIcon,
@@ -20,34 +19,47 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
-import { LogOutIcon } from 'lucide-react'
+import { ListOrderedIcon, LogOutIcon, PyramidIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import ProductImage1 from '@/assets/product-items/image1.png'
-import ProductImage2 from '@/assets/product-items/image2.png'
 import { formatCurrency } from '@/helper'
 import { Separator } from '@/components/ui/separator'
 import { Input } from '@/components/ui/input'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { userAtom } from '@/stores/user'
+import { useNavigate } from 'react-router-dom'
+import { cartAtom, updateItemCart } from '@/stores/cart'
+import { useState } from 'react'
 
 const UserHeader = () => {
-  const cartItem = 2
-  const productItems = [
-    {
-      id: 1,
-      name: 'Hành tây 500g',
-      price: 23000,
-      category: 'Rau tươi',
-      image: ProductImage1,
-      quantity: 5,
-    },
-    {
-      id: 2,
-      name: 'Tỏi củ túi',
-      price: 13000,
-      category: 'Rau tươi',
-      image: ProductImage2,
-      quantity: 4,
-    },
-  ]
+  const [isCartOpen, setIsCartOpen] = useState(false)
+
+  const setUser = useSetAtom(userAtom)
+  const navigate = useNavigate()
+
+  const logout = () => {
+    setUser(null)
+    localStorage.removeItem('access_token')
+    navigate('/login')
+  }
+
+  const navigateToAccountPage = () => {
+    navigate('/account')
+  }
+
+  const navigateToOrderPage = () => {
+    navigate('/order')
+  }
+
+  const navigateToPaymentPage = () => {
+    navigate('/payment')
+  }
+
+  const cartItem = useAtomValue(cartAtom)
+
+  const handleCloseCart = () => {
+    setIsCartOpen(false)
+  }
+  const totalPrice = cartItem?.reduce((acc, item) => acc + item.item.price * item.quantity, 0) ?? 0
 
   return (
     <header className="flex flex-col items-center my-12">
@@ -56,51 +68,72 @@ const UserHeader = () => {
         <Navigation />
         <div className="flex gap-8">
           <MagnifyingGlassIcon className="w-[28px] cursor-pointer" />
-          <Sheet>
+          <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
             <SheetTrigger>
               <div className="relative w-[28px] h-[28px] flex justify-center items-center cursor-pointer">
                 <ShoppingCartIcon className="w-[28px] absolute" />
                 <div className="absolute -top-2 -right-2 bg-zinc-700 text-[10px] text-white rounded-full w-[16px] h-[16px] flex justify-center items-center">
-                  {cartItem}
+                  {cartItem?.length ?? 0}
                 </div>
               </div>
             </SheetTrigger>
-            <SheetContent style={{ maxWidth: '60vw' }} className="p-12">
+            <SheetContent style={{ maxWidth: '60vw' }} className="p-12 overflow-scroll">
               <SheetHeader>
-                <SheetTitle className="flex justify-between">
+                <SheetTitle className="flex justify-between gap-4">
                   <div className="text-4xl">Cập nhật giỏ hàng</div>
-                  <Button className="w-[240px]">Tiếp tục mua sắm</Button>
-                  <Button className="w-[240px] bg-[#FFD470] text-[#000000]" variant={'custom'}>
+                  <Button className="w-[240px]" onClick={handleCloseCart}>
+                    Tiếp tục mua sắm
+                  </Button>
+                  <Button
+                    className="w-[240px] bg-[#FFD470] text-[#000000]"
+                    variant={'custom'}
+                    onClick={() => {
+                      setIsCartOpen(false)
+                      navigate('/checkout')
+                    }}
+                  >
                     Thanh toán
                   </Button>
                 </SheetTitle>
               </SheetHeader>
               <div className="grid gap-4 py-4">
-                {productItems.map((product) => (
+                {cartItem?.map((product) => (
                   <div className="flex flex-col">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
-                        <img src={product.image} alt={product.name} className="h-[170px] mr-12 object-cover" />
+                        <img
+                          src={product.item?.imageUrl}
+                          alt={product.item?.name}
+                          className="h-[170px] mr-12 object-cover"
+                        />
                         <div className="flex flex-col">
-                          <div className="text-[#6B6565] text-[14px]">{product.category}</div>
-                          <div className="font-bold text-2xl">{product.name}</div>
-                          <div className="">Số lượng: {product.quantity}</div>
+                          <div className="text-[#6B6565] text-[14px]">{'Product Category'}</div>
+                          <div className="font-bold text-2xl">{product.item?.name}</div>
+                          <div className="">Số lượng: {product?.quantity}</div>
                         </div>
                       </div>
                       <div className="flex gap-12">
                         <div className="flex items-center gap-3">
-                          <MinusIcon className="w-4 h-4" />
+                          <Button onClick={() => updateItemCart(product.item, -1)} variant={'ghost'}>
+                            <MinusIcon className="w-4 h-4" />
+                          </Button>
                           {product.quantity}
-                          <PlusIcon className="w-4 h-4" />
+                          <Button onClick={() => updateItemCart(product.item, 1)} variant={'ghost'}>
+                            <PlusIcon className="w-4 h-4" />
+                          </Button>
                         </div>
-                        <div className="flex flex-col">
+                        <div className="flex flex-col items-center">
                           <div className="text-[18px] font-semibold">
-                            {formatCurrency(product.price * product.quantity)}
+                            {formatCurrency(product.item?.price * product.quantity)}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <Button
+                            onClick={() => updateItemCart(product.item, 0)}
+                            variant={'ghost'}
+                            className="flex items-center gap-2"
+                          >
                             <TrashIcon className="w-4 h-4" />
                             <div className="text-[#FF5252]">Remove</div>
-                          </div>
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -115,16 +148,16 @@ const UserHeader = () => {
               </div>
               <Separator className="my-2 h-0.5" />
               <div className="flex justify-between">
-                <div>2 món hàng</div>
+                <div>{cartItem?.length} món hàng</div>
                 <div className="grid grid-cols-2 gap-x-12">
                   <div className="text-right">Subtotal</div>
-                  <div>{formatCurrency(167000)}</div>
+                  <div>{formatCurrency(totalPrice)}</div>
                   <div className="text-right">Shipping</div>
                   <div>{formatCurrency(0)}</div>
                   <div className="text-right">Discounts & Coupons</div>
                   <div>{formatCurrency(0)}</div>
                   <div className="text-right font-bold">Total</div>
-                  <div className="font-bold">{formatCurrency(167000)}</div>
+                  <div className="font-bold">{formatCurrency(totalPrice)}</div>
                 </div>
               </div>
             </SheetContent>
@@ -134,22 +167,27 @@ const UserHeader = () => {
               <UserIcon className="w-[28px] cursor-pointer" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>Tài khoản của tôi</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuGroup>
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={navigateToAccountPage}>
                   <UsersIcon className="mr-2 h-4 w-4" />
-                  <span>Profile</span>
+                  <span>Thông tin cá nhân</span>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCardIcon className="mr-2 h-4 w-4" />
-                  <span>Billing</span>
+                <DropdownMenuItem onClick={navigateToOrderPage}>
+                  <ListOrderedIcon className="mr-2 h-4 w-4" />
+                  <span>Lịch sử mua hàng</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={navigateToPaymentPage}>
+                  <PyramidIcon className="mr-2 h-4 w-4" />
+                  <span>Nạp tiền</span>
                 </DropdownMenuItem>
               </DropdownMenuGroup>
+              <DropdownMenuLabel>Hoạt động</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>
-                <LogOutIcon className="w-4 h-4 mr-2" />
-                <span>Log out</span>
+              <DropdownMenuItem onClick={logout}>
+                <LogOutIcon className="w-4 h-4 mr-2 cursor-pointer" />
+                <span>Đăng xuất</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

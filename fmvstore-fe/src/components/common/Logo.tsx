@@ -18,8 +18,8 @@ type LogoProps = {
 const Logo: React.FC<LogoProps> = ({ href = '/' }) => {
   const letters = [
     { letter: 'F', color: 'text-green-600' },
-    { letter: 'B', color: 'text-amber-500' },
-    { letter: 'T', color: 'text-green-600' },
+    { letter: 'M', color: 'text-amber-500' },
+    { letter: 'V', color: 'text-green-600' },
   ]
 
   const navigate = useNavigate()
